@@ -18,6 +18,10 @@ module.exports = {
     ],
   },
   resolve: {
+    alias: {
+      Interfaces: path.resolve(__dirname, 'src/interfaces'),
+      Ccomponents: path.resolve(__dirname, 'src/components'),
+    },
     extensions: ['.tsx', '.ts', '.jsx', '.js'],
   },
   devServer: {
