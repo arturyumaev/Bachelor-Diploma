@@ -25,3 +25,4 @@ interface Appointment extends WithId {
 }
 
 export default Appointment;
+

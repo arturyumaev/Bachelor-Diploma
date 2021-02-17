@@ -1,16 +1,9 @@
 import Appointment from "./Appointment/Appointment";
+import User from "./User";
 import Gender from "./Utils/Gender";
 import WithId from "./WithId";
 
-export default interface Patient extends WithId {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-    gender: Gender;
-    birthDate: number;
-    address: string;
-
+export default interface Patient extends WithId, User {
     emergencyContactName: string;
     emergencyContactPhone: string;
     emergencyContactRelation: string;
