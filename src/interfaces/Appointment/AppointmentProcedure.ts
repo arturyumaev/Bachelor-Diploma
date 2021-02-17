@@ -3,9 +3,12 @@ import Currency from "../Utils/Currency";
 import WithId from "../WithId";
 
 export default interface AppointmentProcedure extends WithId {
+    appointmentId: number;
     procedureName: string;
-    doctor: Doctor;
+    
+    doctor?: Doctor;
     doctorId: number;
+    
     duration: number;
     room: string;
     price: number;

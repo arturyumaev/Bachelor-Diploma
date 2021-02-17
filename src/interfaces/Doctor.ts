@@ -4,6 +4,7 @@ import WithId from "./WithId";
 export default interface Doctor extends WithId {
     firstName: string;
     lastName: string;
+    locationId: number;
     location: Location;
     email: string;
     phone: string;

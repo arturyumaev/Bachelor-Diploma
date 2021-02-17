@@ -7,7 +7,6 @@ export default interface Patient extends WithId {
     lastName: string;
     email: string;
     phone: string;
-    appointments: Array<Appointment>;
     gender: Gender;
     birthDate: number;
     address: string;

@@ -9,18 +9,19 @@ interface Appointment extends WithId {
     name: string;
     time: number;
     duration: number;
-    procedures: Array<AppointmentProcedure>;
     status: AppointmentStatus;
     notes: string;
 
-    patient: Patient;
+    patient?: Patient;
     patientId: number;
 
-    doctor: Doctor;
+    doctor?: Doctor;
     doctorId: number;
 
-    location: Location;
+    location?: Location;
     locationId: number;
+
+    procedures?: Array<AppointmentProcedure>;
 }
 
 export default Appointment;
