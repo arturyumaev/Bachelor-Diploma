@@ -1,5 +1,11 @@
 import React from 'react';
+import Authorization from './components/Pages/Authorization/Authorization';
 
-export const App: React.FC<{}> = () => (
-  <h1>Hello React</h1>
-);
+export const App: React.FC<{}> = () => {
+  
+  return (
+    <div className="full-height">
+      <Authorization />
+    </div>
+  );
+};
