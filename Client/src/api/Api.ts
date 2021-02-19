@@ -5,16 +5,22 @@ enum HTTPMethod {
   DELETE = 'DELETE',
 }
 
-const fetchApi = (url: string, method: HTTPMethod, postData?: object): Promise<Response> => {
+const fetchApi = (entiry: string, method: HTTPMethod, postData?: object): Promise<Response> => {
+  const protocol = 'http'
+  const host = 'localhost'
+  const port = 3000
+  const url = `${protocol}://${host}:${port}/${entiry}`
+  
   let requestOptions: RequestInit = {
     credentials: 'include',
     method: method,
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8',
+      'Access-Control-Allow-Origin': '*',
+    }
   }
 
   if (method == HTTPMethod.POST && postData) {
-    requestOptions.headers = {
-      'Content-Type': 'application/json;charset=utf-8'
-    }
     requestOptions.body = JSON.stringify(postData);
   }
 

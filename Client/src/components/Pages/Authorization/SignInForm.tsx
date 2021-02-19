@@ -13,7 +13,7 @@ const SignInForm = () => {
   const onSubmit = (values: FormValues) => {
     console.log(values);
 
-    fetchApi('https://httpbin.org/anything', HTTPMethod.POST, values)
+    fetchApi('', HTTPMethod.GET, values)
       .then((response) => response.json())
       .then((json) => {
         console.log(json);
