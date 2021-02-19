@@ -9,11 +9,13 @@ interface FormValues {
   password: string;
 }
 
+const requestEntity: string = 'auth';
+
 const SignInForm = () => {
   const onSubmit = (values: FormValues) => {
     console.log(values);
 
-    fetchApi('', HTTPMethod.GET, values)
+    fetchApi(requestEntity, HTTPMethod.GET, values)
       .then((response) => response.json())
       .then((json) => {
         console.log(json);

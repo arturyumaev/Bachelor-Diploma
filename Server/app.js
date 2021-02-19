@@ -1,25 +1,17 @@
-const express = require('express')
-var cors = require('cors')
-
+const express = require('express');
+const cors = require('cors');
 const app = express()
+
+/* Routers */
+const auth = require('./Auth/auth');
+
 const port = 3000
-const corsConfig = {
-  credentials: true,
-  origin: 'http://localhost:8080'
-}
-const responseHeaders = {
-  'Content-Type': 'application/json;charset=utf-8',
-}
+const corsConfig = { credentials: true, origin: 'http://localhost:8080' }
 
 app.use(cors(corsConfig))
-
-app.get('/', (req, res) => {
-  console.log('New request:', req.method, req.headers, req.originalUrl);
-  res.set(responseHeaders)
-  res.json({"foo": "bar"});
-})
+app.use('/auth', auth);
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+  console.log(`Listening at http://localhost:${port}`)
 })
 
