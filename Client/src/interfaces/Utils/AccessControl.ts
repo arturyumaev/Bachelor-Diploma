@@ -1,7 +1,7 @@
 enum AccessControl {
-  Admin,
-  Doctor,
-  Patient,
+  Admin = 'Admin',
+  Doctor = 'Doctor',
+  Patient = 'Patient',
 }
 
 export default AccessControl

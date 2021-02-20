@@ -1,7 +1,7 @@
 enum AppointmentStatus {
-    Confirmed,
-    InProcess,
-    Done,
+    Confirmed = 'Confirmed',
+    InProcess = 'In Process',
+    Done = 'Done',
 }
 
 export default AppointmentStatus

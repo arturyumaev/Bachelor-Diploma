@@ -1,7 +1,7 @@
 enum Gender {
-  Male,
-  Female,
-  Other,
+  Male = 'Male',
+  Female = 'Female',
+  Other = 'Other',
 }
 
 export default Gender;
