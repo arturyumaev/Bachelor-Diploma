@@ -11,7 +11,7 @@ export default interface User extends WithId {
   birthDate: number;
   address: string;
   
-  login: string;
+  username: string;
   hashsum: string;
   accessControl: AccessControl;
 }

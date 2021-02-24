@@ -11,7 +11,7 @@ create table if not exists "User" (
     gender "Gender" not null ,
     "birthDate" timestamp not null ,
     address varchar(300) not null ,
-    login varchar(50) not null ,
+    username varchar(50) not null ,
     hashsum varchar(50) not null ,
     "accessControl" "AccessControl" not null
 );
@@ -102,4 +102,3 @@ create table if not exists  "Admin" (
         foreign key ("locationId")
         references "Location"(id)
 ) inherits ("User");
-

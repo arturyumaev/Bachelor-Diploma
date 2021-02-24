@@ -5,10 +5,10 @@ const app = express()
 /* Routers */
 const auth = require('./Auth/auth');
 
-const port = 3000
-const corsConfig = { credentials: true, origin: 'http://localhost:8080' }
+const port = 3000;
+const corsConfig = { credentials: true, origin: 'http://localhost:8080' };
 
-app.use(cors(corsConfig))
+app.use(cors(corsConfig));
 app.use('/auth', auth);
 
 app.listen(port, () => {

@@ -15,13 +15,13 @@ const SignInForm = () => {
   const onSubmit = (values: FormValues) => {
     console.log(values);
 
-    fetchApi(requestEntity, HTTPMethod.GET, values)
+    fetchApi(requestEntity, HTTPMethod.POST, values)
       .then((response) => response.json())
       .then((json) => {
-        console.log(json);
+        alert(JSON.stringify(json));
       })
       .catch((err) => {
-        console.log(err);
+        alert(err);
       })
   }
 
