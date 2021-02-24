@@ -91,3 +91,15 @@ create table if not exists "AppointmentProcedure" (
         foreign key ("doctorId")
         references "Doctor"(id)
 );
+
+create table if not exists  "Admin" (
+    id serial unique,
+    "locationId" int not null ,
+
+    primary key (id),
+
+    constraint fk_locationId
+        foreign key ("locationId")
+        references "Location"(id)
+) inherits ("User");
+
