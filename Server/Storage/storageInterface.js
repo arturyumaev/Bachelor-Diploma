@@ -20,16 +20,21 @@ module.exports = class StorageInterface {
       password: 'rara22',
       port: 5432,
     })
-
-    this.client.connect();
   }
 
-  authorize = async (username, password) => (
-    this.client
-      .query(generateQueriesAdmin.generateGetUserInfo(username))
-      .then(res => { this.client.end(); return res; })
-      .then(res => res.rows[0])
-  );
+  select = async query => {
+    this.client.connect();
+    const result = await this.client.query(query);
+    this.client.end();
+
+    return result
+  }
+
+  authorize = async (username, password) => {
+    const data = await this.select(generateQueriesAdmin.generateGetUserInfo(username))
+
+    return data.rows[0]
+  }
   
   testConnection() {
     this.client
