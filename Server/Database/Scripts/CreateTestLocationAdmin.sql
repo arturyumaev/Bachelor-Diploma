@@ -13,3 +13,5 @@ select * from "Admin";
 
 SELECT * FROM "Admin"
       WHERE username = 'admin';
+
+select * from "Admin";

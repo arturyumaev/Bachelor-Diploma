@@ -2,6 +2,7 @@ const path = require('path')
 
 module.exports = {
   entry: './src/index.tsx',
+  mode: 'development',
   output: {
     path: path.resolve(__dirname, './dist'),
     filename: 'bundle.js'
@@ -29,6 +30,7 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.jsx', '.js'],
   },
   devServer: {
-    contentBase: path.resolve(__dirname, './dist')
+    contentBase: path.resolve(__dirname, './dist'),
+    historyApiFallback: true,
   }
 }

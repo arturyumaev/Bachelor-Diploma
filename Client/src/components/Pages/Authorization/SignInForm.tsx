@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Input } from 'antd';
 import { Form, Button, Radio } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { fetchApi, HTTPMethod } from '../../../api/Api';
+import { GlobalContext } from '../../../App';
 
 interface FormValues {
   login: string;
@@ -12,6 +13,8 @@ interface FormValues {
 const requestEntity: string = 'auth';
 
 const SignInForm = () => {
+  const globalContext = useContext(GlobalContext);
+
   const onSubmit = (values: FormValues) => {
     console.log(values);
 
@@ -19,6 +22,7 @@ const SignInForm = () => {
       .then((response) => response.json())
       .then((json) => {
         alert(JSON.stringify(json));
+        json.username && globalContext.setAuthorized(true);
       })
       .catch((err) => {
         alert(err);

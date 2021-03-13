@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { App } from './App';
 
 require('./index.scss');
-require('antd/dist/antd.css'); // 'antd/dist/antd.css';
+require('antd/dist/antd.css');
 
 ReactDOM.render(
   <App />,
