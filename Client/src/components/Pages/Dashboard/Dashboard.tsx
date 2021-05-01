@@ -9,10 +9,14 @@ import { Layout, Menu, Breadcrumb } from 'antd';
 import {
   DesktopOutlined,
   PieChartOutlined,
-  FileOutlined,
-  TeamOutlined,
+  UserAddOutlined,
+  ProfileOutlined,
   UserOutlined,
+  ImportOutlined,
+  EnvironmentOutlined,
 } from '@ant-design/icons';
+import UserProfile from '../UserProfile/UserProfile';
+import Analytics from '../../Analytics';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -31,51 +35,63 @@ const handleLogout = (globalContext: any) => (
 )
 
 export default function Dashboard() {
+  const defaultTab = 'dashboard';
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<string>(defaultTab);
   const globalContext = useContext(GlobalContext);
   const toggle = () => setSidebarCollapsed(!sidebarCollapsed);
 
+  const mapTabToComponents: { [key: string]: any } = {
+    dashboard: <Analytics />,
+    profile: <UserProfile />,
+    appointments: <>appointments</>,
+    patients: <>patients</>,
+    doctors: <>doctors</>,
+    locations: <>Locations</>,
+  };
+ 
   return getSession()
     ? (
       <div>
         <Layout style={{ minHeight: '100vh' }}>
           <Sider collapsible collapsed={sidebarCollapsed} onCollapse={toggle}>
             <div className="logo" />
-            <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-              <Menu.Item key="1" icon={<PieChartOutlined />}>
-                Option 1
-            </Menu.Item>
-              <Menu.Item key="2" icon={<DesktopOutlined />}>
-                Option 2
-            </Menu.Item>
-              <SubMenu key="sub1" icon={<UserOutlined />} title="User">
-                <Menu.Item key="3">Tom</Menu.Item>
-                <Menu.Item key="4">Bill</Menu.Item>
-                <Menu.Item key="5">Alex</Menu.Item>
-              </SubMenu>
-              <SubMenu key="sub2" icon={<TeamOutlined />} title="Team">
-                <Menu.Item key="6">Team 1</Menu.Item>
-                <Menu.Item key="8">Team 2</Menu.Item>
-              </SubMenu>
-              <Menu.Item key="9" icon={<FileOutlined />}>
-                Files
+            <Menu theme="dark" defaultSelectedKeys={[defaultTab]} mode="inline">
+              <Menu.Item key="dashboard" icon={<PieChartOutlined />} onClick={() => setActiveTab('dashboard')}>
+                Dashboard
+              </Menu.Item>
+              <Menu.Item key="profile" icon={<ProfileOutlined />} onClick={() => setActiveTab('profile')}>
+                Profile
+              </Menu.Item>
+              <Menu.Item key="appointments" icon={<DesktopOutlined />} onClick={() => setActiveTab('appointments')}>
+                Appointments
+              </Menu.Item>
+              <Menu.Item key="patients" icon={<UserOutlined />} onClick={() => setActiveTab('patients')}>
+                Patients
+              </Menu.Item>
+              <Menu.Item key="doctors" icon={<UserAddOutlined />} onClick={() => setActiveTab('doctors')}>
+                Doctors
+              </Menu.Item>
+              <Menu.Item key="locations" icon={<EnvironmentOutlined />} onClick={() => setActiveTab('locations')}>
+                Locations
               </Menu.Item>
             </Menu>
           </Sider>
           <Layout className="site-layout">
             <Header className="site-layout-background" style={{ padding: 12 }}>
               <LogoutButtonWrapper>
-                <Button type="primary" onClick={() => handleLogout(globalContext)}>Logout</Button>
+                <Button type="primary" onClick={() => handleLogout(globalContext)} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                  <ImportOutlined />Logout
+                </Button>
               </LogoutButtonWrapper>
             </Header>
             <Content style={{ margin: '0 16px' }}>
               <Breadcrumb style={{ margin: '16px 0' }}>
-                <Breadcrumb.Item>User</Breadcrumb.Item>
-                <Breadcrumb.Item>Bill</Breadcrumb.Item>
+                <Breadcrumb.Item>{activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}</Breadcrumb.Item>
               </Breadcrumb>
-              <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
-                Bill is a cat.
-            </div>
+              <ContentWrapper className="site-layout-background">
+                {mapTabToComponents[activeTab]}
+              </ContentWrapper>
             </Content>
             <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
           </Layout>
@@ -86,6 +102,10 @@ export default function Dashboard() {
       <Redirect to='/' />
     );
 };
+
+const ContentWrapper = styled.div`
+  min-height: 360px;
+`;
 
 const LogoutButtonWrapper = styled.div`
   display: flex;
