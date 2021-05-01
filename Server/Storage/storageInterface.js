@@ -27,13 +27,13 @@ module.exports = class StorageInterface {
     const result = await this.client.query(query);
     this.client.end();
 
-    return result
+    return result;
   }
 
   authorize = async (username, password) => {
-    const data = await this.select(generateQueriesAdmin.generateGetUserInfo(username))
+    const data = await this.select(generateQueriesAdmin.generateGetUserInfo(username));
 
-    return data.rows[0]
+    return data.rows[0];
   }
   
   testConnection() {

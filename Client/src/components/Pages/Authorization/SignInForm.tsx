@@ -22,7 +22,7 @@ const SignInForm = () => {
       .then((response) => response.json())
       .then((json) => {
         alert(JSON.stringify(json));
-        json.username && globalContext.setAuthorized(true);
+        globalContext.sessionUpdated();
       })
       .catch((err) => {
         alert(err);

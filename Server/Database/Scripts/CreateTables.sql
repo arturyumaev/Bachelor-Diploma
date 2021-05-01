@@ -1,4 +1,4 @@
-create type "AppointmentStatus" as enum ('Confirmed', 'In Process', 'Done');
+create type "AppointmentStatus" as enum ('Confirmed', 'In Process', 'Done', 'Canceled');
 create type "Currency" as enum ('РУБ', 'USD');
 create type "Gender" as enum ('Male', 'Female', 'Other');
 create type "AccessControl" as enum ('Admin', 'Doctor', 'Patient');
