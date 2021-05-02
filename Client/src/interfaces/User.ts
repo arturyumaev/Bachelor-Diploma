@@ -8,10 +8,10 @@ export default interface User extends WithId {
   email: string;
   phone: string;
   gender: Gender;
-  birthDate: number;
+  birthDate: string;
   address: string;
   
   username: string;
   hashsum: string;
-  accessControl: AccessControl;
+  accessControl?: AccessControl;
 }

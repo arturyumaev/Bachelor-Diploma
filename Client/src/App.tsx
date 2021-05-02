@@ -10,9 +10,6 @@ export const GlobalContext = createContext({
 
 export const App: React.FC<{}> = () => {
   const [session, setSession] = useState(getSession());
-  console.log('session', session);
-
-  console.log('on main');
   
   return (
     <GlobalContext.Provider

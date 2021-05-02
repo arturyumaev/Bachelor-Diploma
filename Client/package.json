@@ -34,12 +34,18 @@
     "antd": "^4.12.3",
     "bootstrap": "^4.6.0",
     "less-loader": "^8.0.0",
+    "lodash": "^4.17.21",
     "node-sass": "^5.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
+    "redux": "^4.1.0",
+    "redux-persist": "^6.0.0",
+    "redux-thunk": "^2.3.0",
     "sass": "^1.32.7",
     "styled-components": "^5.2.3",
+    "typesafe-actions": "^5.1.0",
     "uninstall": "0.0.0"
   }
 }

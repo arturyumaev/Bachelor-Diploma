@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import getSession from '../../../utils';
+import getSession from '../../utils';
 import { Tabs } from 'antd';
 import { FormOutlined, AndroidOutlined, EllipsisOutlined } from '@ant-design/icons';
 import UserProfileForm from './UserProfileForm';
@@ -10,7 +10,6 @@ const { TabPane } = Tabs;
 const UserProfile = () => {
   const defaultActiveTab = 'personalInfo';
   const session = getSession();
-  console.log('session from user', session);
 
   return (
     <Container>

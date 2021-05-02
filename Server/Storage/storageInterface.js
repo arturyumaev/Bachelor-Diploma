@@ -1,10 +1,15 @@
 const { request } = require('express');
+const { _ } = require('lodash');
 const { Client } = require('pg');
 const ConfigurationManager = require('./configurationManager');
 const GenerateQueriesAdmin = require('./PostgreSQLQuery/GenerateQueriesAdmin');
+const GenerateQueriesPatient = require('./PostgreSQLQuery/GenerateQueriesPatient');
+const GenerateQueriesDoctor = require('./PostgreSQLQuery/GenerateQueriesDoctor');
 const GenerateQueriesAppointment = require('./PostgreSQLQuery/GenerateQueriesAppointment');
 
 const generateQueriesAdmin = new GenerateQueriesAdmin();
+const generateQueriesPatient = new GenerateQueriesPatient();
+const generateQueriesDoctor = new GenerateQueriesDoctor();
 const generateQueriesAppointment = new GenerateQueriesAppointment();
 
 module.exports = class StorageInterface {
@@ -31,9 +36,21 @@ module.exports = class StorageInterface {
   }
 
   authorize = async (username, password) => {
-    const data = await this.select(generateQueriesAdmin.generateGetUserInfo(username));
+    this.client.connect();
+    const adminData = await this.client.query(generateQueriesAdmin.generateGetUserInfo(username));
+    const patientData = await this.client.query(generateQueriesPatient.generateGetUserInfo(username));
+    const doctorData = await this.client.query(generateQueriesDoctor.generateGetUserInfo(username));
+    this.client.end();
 
-    return data.rows[0];
+    return Promise
+      .all([adminData, patientData, doctorData])
+      .then(results => {
+        const data = results.filter(res => res.rowCount);
+        console.log('DATA', data);
+        return data.length ? data[0].rows[0] : {};
+      });
+    
+    // return adminData.rows[0];
   }
   
   testConnection() {

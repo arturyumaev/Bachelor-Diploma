@@ -1,5 +1,5 @@
 interface WithId {
-    id: number;
+  id: number;
 }
 
 export default WithId

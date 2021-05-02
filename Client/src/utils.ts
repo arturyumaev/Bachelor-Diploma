@@ -1,5 +1,6 @@
 const getSession = (): string => {
-  return document.cookie.split('=')[1];
+  const cookie = document.cookie;
+  return cookie.slice(cookie.indexOf('session')).split('=')[1];
 }
 
 export default getSession;

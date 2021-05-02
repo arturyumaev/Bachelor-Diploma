@@ -15,31 +15,34 @@ import {
   ImportOutlined,
   EnvironmentOutlined,
 } from '@ant-design/icons';
-import UserProfile from '../UserProfile/UserProfile';
+import UserProfile from '../../UserProfile/UserProfile';
 import Analytics from '../../Analytics';
+import { connect } from 'react-redux';
+import userProfileInit from '../../../store/actionCreators/userProfile/userProfileInit';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 const logoutEntity: string = 'logout';
 
-const handleLogout = (globalContext: any) => (
-  fetchApi(logoutEntity, HTTPMethod.POST, {})
-    .then((response) => response.json())
-    .then((json) => {
-      alert('Loggout was successfull');
-      globalContext.sessionUpdated();
-    })
-    .catch((err) => {
-      alert(err);
-    })
-)
-
-export default function Dashboard() {
+const Dashboard = (props: any) => {
   const defaultTab = 'dashboard';
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>(defaultTab);
   const globalContext = useContext(GlobalContext);
   const toggle = () => setSidebarCollapsed(!sidebarCollapsed);
+
+  const handleLogout = (globalContext: any) => {
+    fetchApi(logoutEntity, HTTPMethod.POST, {})
+      .then((response) => response.json())
+      .then((json) => {
+        alert('Loggout was successfull');
+        globalContext.sessionUpdated();
+        props.dispatch(userProfileInit());
+      })
+      .catch((err) => {
+        alert(err);
+      })
+  };
 
   const mapTabToComponents: { [key: string]: any } = {
     dashboard: <Analytics />,
@@ -112,3 +115,13 @@ const LogoutButtonWrapper = styled.div`
   flex-direction: row-reverse;
   align-items: center;
 `;
+
+const mapStateToProps = (state: any) => {
+  return {
+    userProfile: state.userProfile,
+  }
+}
+
+export default connect(
+  mapStateToProps
+)(Dashboard);

@@ -6,9 +6,7 @@ module.exports = class GenerateQueriesAdmin {
       SELECT * FROM "Admin"
       WHERE username = '${username}';
     `;
-
     console.log(sqlQuery);
-
     return sqlQuery;
   }
 
