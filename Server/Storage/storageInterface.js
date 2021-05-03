@@ -27,22 +27,20 @@ module.exports = class StorageInterface {
       password: 'rara22',
       port: 5432,
     })
+
+    this.client.connect();
   }
 
   select = async query => {
-    this.client.connect();
     const result = await this.client.query(query);
-    this.client.end();
 
     return result;
   }
 
   authorize = async (username, password) => {
-    this.client.connect();
     const adminData = await this.client.query(generateQueriesAdmin.generateGetUserInfo(username));
     const patientData = await this.client.query(generateQueriesPatient.generateGetUserInfo(username));
     const doctorData = await this.client.query(generateQueriesDoctor.generateGetUserInfo(username));
-    this.client.end();
 
     return Promise
       .all([adminData, patientData, doctorData])
@@ -53,10 +51,7 @@ module.exports = class StorageInterface {
   }
 
   update = async (query) => {
-    this.client.connect();
     const result = await this.client.query(query);
-    this.client.end();
-
     return result;
   }
   

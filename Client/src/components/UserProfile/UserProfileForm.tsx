@@ -6,6 +6,7 @@ import { Select } from 'antd';
 import { connect } from 'react-redux';
 import { ICommonUser } from '../../store/reducers/userProfileReducer';
 import { fetchApi, HTTPMethod } from '../../api/Api';
+import updateUser from '../../store/actionCreators/userProfile/updateUser';
 
 const { Option } = Select;
 
@@ -113,7 +114,9 @@ const UserProfileForm = (props: any) => {
       accessControl: props.userProfile.accessControl,
     };
 
-    fetchApi('user', HTTPMethod.PUT, values);
+    fetchApi('user', HTTPMethod.PUT, values)
+      .then((response) => response.json())
+      .then(json => props.dispatch(updateUser(json)));
   }
 
   return (
