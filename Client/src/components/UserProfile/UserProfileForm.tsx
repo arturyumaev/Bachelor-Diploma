@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import getSession from '../../utils';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, message } from 'antd';
 import { Select } from 'antd';
 import { connect } from 'react-redux';
-import { ICommonUser } from '../../store/reducers/userProfileReducer';
 import { fetchApi, HTTPMethod } from '../../api/Api';
 import updateUser from '../../store/actionCreators/userProfile/updateUser';
 
@@ -117,6 +116,8 @@ const UserProfileForm = (props: any) => {
     fetchApi('user', HTTPMethod.PUT, values)
       .then((response) => response.json())
       .then(json => props.dispatch(updateUser(json)));
+    
+    message.success('Data has been updated successfully', 3);
   }
 
   return (
