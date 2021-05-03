@@ -5,11 +5,11 @@ enum HTTPMethod {
   DELETE = 'DELETE',
 }
 
-const fetchApi = (entiry: string, method: HTTPMethod, postData?: object): Promise<Response> => {
+const fetchApi = (entity: string, method: HTTPMethod, postData?: object): Promise<Response> => {
   const protocol = 'http';
   const host = 'localhost';
   const port = 3000;
-  const url = `${protocol}://${host}:${port}/${entiry}`;
+  const url = `${protocol}://${host}:${port}/${entity}`;
   
   let requestOptions: RequestInit = {
     credentials: 'include',
@@ -20,7 +20,7 @@ const fetchApi = (entiry: string, method: HTTPMethod, postData?: object): Promis
     }
   };
 
-  if (method == HTTPMethod.POST && postData) {
+  if ((method == HTTPMethod.POST || method == HTTPMethod.PUT) && postData) {
     requestOptions.body = JSON.stringify(postData);
   }
 

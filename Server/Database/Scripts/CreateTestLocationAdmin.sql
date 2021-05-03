@@ -16,3 +16,7 @@ insert into "Patient"("firstName", "lastName", email, phone, gender, "birthDate"
 select * from "Patient";
 
 select * from "Admin";
+
+UPDATE "Patient"
+SET "firstName" = 'Acrhi', "lastName" = 'yuma'
+WHERE id = 1;

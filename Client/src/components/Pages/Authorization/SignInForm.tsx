@@ -18,8 +18,6 @@ const requestEntity: string = 'auth';
 const SignInForm = (props: any) => {
   const globalContext = useContext(GlobalContext);
 
-  console.log('props', props.userProfile);
-
   const onSubmit = (values: FormValues) => {
     fetchApi(requestEntity, HTTPMethod.POST, values)
       .then((response) => response.json())

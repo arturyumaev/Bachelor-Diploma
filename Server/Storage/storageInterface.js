@@ -1,11 +1,13 @@
 const { request } = require('express');
 const { _ } = require('lodash');
 const { Client } = require('pg');
+const pg = require('pg');
 const ConfigurationManager = require('./configurationManager');
 const GenerateQueriesAdmin = require('./PostgreSQLQuery/GenerateQueriesAdmin');
 const GenerateQueriesPatient = require('./PostgreSQLQuery/GenerateQueriesPatient');
 const GenerateQueriesDoctor = require('./PostgreSQLQuery/GenerateQueriesDoctor');
 const GenerateQueriesAppointment = require('./PostgreSQLQuery/GenerateQueriesAppointment');
+const pool = new pg.Pool();
 
 const generateQueriesAdmin = new GenerateQueriesAdmin();
 const generateQueriesPatient = new GenerateQueriesPatient();
@@ -46,11 +48,16 @@ module.exports = class StorageInterface {
       .all([adminData, patientData, doctorData])
       .then(results => {
         const data = results.filter(res => res.rowCount);
-        console.log('DATA', data);
         return data.length ? data[0].rows[0] : {};
       });
-    
-    // return adminData.rows[0];
+  }
+
+  update = async (query) => {
+    this.client.connect();
+    const result = await this.client.query(query);
+    this.client.end();
+
+    return result;
   }
   
   testConnection() {

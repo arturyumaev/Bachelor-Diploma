@@ -83,6 +83,9 @@ const Dashboard = (props: any) => {
           <Layout className="site-layout">
             <Header className="site-layout-background" style={{ padding: 12 }}>
               <LogoutButtonWrapper>
+                <Greeting>
+                  Hello, {props.userProfile.firstName}
+                </Greeting>
                 <Button type="primary" onClick={() => handleLogout(globalContext)} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                   <ImportOutlined />Logout
                 </Button>
@@ -112,8 +115,19 @@ const ContentWrapper = styled.div`
 
 const LogoutButtonWrapper = styled.div`
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: row;
   align-items: center;
+  justify-content: flex-end;
+`;
+
+const Greeting = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 16px;
+  height: 20px;
+  color: white;
+  margin-right: 20px;
 `;
 
 const mapStateToProps = (state: any) => {

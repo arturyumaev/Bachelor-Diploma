@@ -5,6 +5,7 @@ import { Form, Input, Button } from 'antd';
 import { Select } from 'antd';
 import { connect } from 'react-redux';
 import { ICommonUser } from '../../store/reducers/userProfileReducer';
+import { fetchApi, HTTPMethod } from '../../api/Api';
 
 const { Option } = Select;
 
@@ -84,13 +85,44 @@ const UserProfileForm = (props: any) => {
     },
   ];
 
+  const PatientFields: Array<IFormField> = [
+    {
+      label: 'Emergency contact name',
+      name: 'emergencyContactName',
+      placeholder: 'Input name',
+      required: false,
+    },
+    {
+      label: 'Emergency contact phone',
+      name: 'emergencyContactPhone',
+      placeholder: 'Input phone',
+      required: false,
+    },
+    {
+      label: 'Emergency contact relation',
+      name: 'emergencyContactRelation',
+      placeholder: 'Input relation',
+      required: false,
+    },
+  ];
+
+  const handleOnFinish = () => {
+    const values = {
+      ...form.getFieldsValue(),
+      id: props.userProfile.id,
+      accessControl: props.userProfile.accessControl,
+    };
+
+    fetchApi('user', HTTPMethod.PUT, values);
+  }
+
   return (
     <Container>
       <Form
         form={form}
         layout="vertical"
         initialValues={userProfile}
-        onFinish={() => console.log(form.getFieldsValue())}
+        onFinish={handleOnFinish}
       >
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
           {BaseFormFields.map((field: IFormField) => (
@@ -104,6 +136,16 @@ const UserProfileForm = (props: any) => {
             </FieldWrapper>
             )
           )}
+          {props.userProfile.accessControl === 'Patient' &&
+            PatientFields.map((field: IFormField) => (
+              <FieldWrapper key={field.name}>
+                <Form.Item name={field.name} label={field.label} rules={[{ required: field.required }]} key={field.name}>
+                  <Input placeholder={field.placeholder}/>
+                </Form.Item>
+              </FieldWrapper>
+              )
+            )
+          }
         </div>
         <Form.Item>
           <Button type="primary" htmlType="submit">

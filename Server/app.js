@@ -6,6 +6,7 @@ const app = express();
 /* Routers */
 const auth = require('./Auth/auth');
 const logout = require('./Auth/logout');
+const user = require('./User/user');
 
 const port = 3000;
 const corsConfig = { credentials: true, origin: 'http://localhost:8080' };
@@ -14,8 +15,9 @@ app.use(cors(corsConfig));
 app.use(cookieParser());
 app.use('/auth', auth);
 app.use('/logout', logout);
+app.use('/user', user);
+
 
 app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}`)
 });
-
