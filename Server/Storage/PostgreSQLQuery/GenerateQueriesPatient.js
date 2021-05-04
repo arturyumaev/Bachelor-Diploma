@@ -18,4 +18,24 @@ module.exports = class GenerateQueriesPatient {
 
     return sqlQuery;
   }
+
+  generateNewPatient(data) {
+    let keys = [];
+    let values = [];
+    console.log('new patient', data);
+
+    for (let key in data) {
+      keys.push(`"${key}"`);
+      values.push(`'${data[key]}'`);
+    }
+
+    let sqlQuery = `
+      INSERT INTO "Patient"(${keys.join(', ')})
+        values (${values.join(', ')});
+    `;
+
+    console.log(sqlQuery);
+
+    return sqlQuery;
+  }
 }

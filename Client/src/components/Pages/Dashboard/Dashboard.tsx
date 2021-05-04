@@ -19,17 +19,20 @@ import UserProfile from '../../UserProfile/UserProfile';
 import Analytics from '../../Analytics';
 import { connect } from 'react-redux';
 import userProfileInit from '../../../store/actionCreators/userProfile/userProfileInit';
+import Patients from '../../Patients/Patients';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 const logoutEntity: string = 'logout';
 
 const Dashboard = (props: any) => {
-  const defaultTab = 'dashboard';
+  const defaultTab = 'appointments';
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>(defaultTab);
   const globalContext = useContext(GlobalContext);
   const toggle = () => setSidebarCollapsed(!sidebarCollapsed);
+
+  const accessControl = props.userProfile.accessControl;
 
   const handleLogout = (globalContext: any) => {
     fetchApi(logoutEntity, HTTPMethod.POST, {})
@@ -48,7 +51,7 @@ const Dashboard = (props: any) => {
     dashboard: <Analytics />,
     profile: <UserProfile />,
     appointments: <>appointments</>,
-    patients: <>patients</>,
+    patients: <Patients />,
     doctors: <>doctors</>,
     locations: <>Locations</>,
   };
@@ -60,24 +63,32 @@ const Dashboard = (props: any) => {
           <Sider collapsible collapsed={sidebarCollapsed} onCollapse={toggle}>
             <div className="logo" />
             <Menu theme="dark" defaultSelectedKeys={[defaultTab]} mode="inline">
-              <Menu.Item key="dashboard" icon={<PieChartOutlined />} onClick={() => setActiveTab('dashboard')}>
-                Dashboard
-              </Menu.Item>
+              {accessControl === "Admin" &&
+                <Menu.Item key="dashboard" icon={<PieChartOutlined />} onClick={() => setActiveTab('dashboard')}>
+                  Dashboard
+                </Menu.Item>
+              }
               <Menu.Item key="profile" icon={<ProfileOutlined />} onClick={() => setActiveTab('profile')}>
                 Profile
               </Menu.Item>
               <Menu.Item key="appointments" icon={<DesktopOutlined />} onClick={() => setActiveTab('appointments')}>
                 Appointments
               </Menu.Item>
-              <Menu.Item key="patients" icon={<UserOutlined />} onClick={() => setActiveTab('patients')}>
-                Patients
-              </Menu.Item>
-              <Menu.Item key="doctors" icon={<UserAddOutlined />} onClick={() => setActiveTab('doctors')}>
-                Doctors
-              </Menu.Item>
-              <Menu.Item key="locations" icon={<EnvironmentOutlined />} onClick={() => setActiveTab('locations')}>
-                Locations
-              </Menu.Item>
+              {(accessControl === 'Admin' || accessControl === 'Doctor') &&
+                <Menu.Item key="patients" icon={<UserOutlined />} onClick={() => setActiveTab('patients')}>
+                  Patients
+                </Menu.Item>
+              }
+              {accessControl === 'Admin' &&
+                <Menu.Item key="doctors" icon={<UserAddOutlined />} onClick={() => setActiveTab('doctors')}>
+                  Doctors
+                </Menu.Item>
+              }
+              {accessControl === 'Admin' &&
+                <Menu.Item key="locations" icon={<EnvironmentOutlined />} onClick={() => setActiveTab('locations')}>
+                  Locations
+                </Menu.Item>
+              }
             </Menu>
           </Sider>
           <Layout className="site-layout">

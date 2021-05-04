@@ -15,6 +15,7 @@ const generateQueriesDoctor = new GenerateQueriesDoctor();
 const generateQueriesAppointment = new GenerateQueriesAppointment();
 
 module.exports = class StorageInterface {
+  /* Implementation of CRUD interface */
   constructor() {
     const configurationManager = new ConfigurationManager();
     this.configuration = configurationManager.importConfiguration();
@@ -31,9 +32,21 @@ module.exports = class StorageInterface {
     this.client.connect();
   }
 
+  create = async query => {
+    const result = await this.client.query(query);
+
+    return result;
+  }
+
   select = async query => {
     const result = await this.client.query(query);
 
+    return result;
+  }
+
+  update = async (query) => {
+    const result = await this.client.query(query);
+    
     return result;
   }
 
@@ -48,11 +61,6 @@ module.exports = class StorageInterface {
         const data = results.filter(res => res.rowCount);
         return data.length ? data[0].rows[0] : {};
       });
-  }
-
-  update = async (query) => {
-    const result = await this.client.query(query);
-    return result;
   }
   
   testConnection() {

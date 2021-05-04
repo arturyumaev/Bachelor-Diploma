@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import getSession from '../../utils';
-import { Form, Input, Button, message } from 'antd';
+import { Form, Input, Button, notification } from 'antd';
 import { Select } from 'antd';
 import { connect } from 'react-redux';
 import { fetchApi, HTTPMethod } from '../../api/Api';
@@ -48,6 +48,12 @@ const UserProfileForm = (props: any) => {
       required: false,
     },
     {
+      label: 'Birth date',
+      name: 'birthDate',
+      placeholder: 'Input birth date',
+      required: false,
+    },
+    {
       label: 'Gender',
       name: 'gender',
       placeholder: 'Select gender',
@@ -66,12 +72,6 @@ const UserProfileForm = (props: any) => {
       ),
     },
     {
-      label: 'Address',
-      name: 'address',
-      placeholder: 'Input address',
-      required: false,
-    },
-    {
       label: 'Username',
       name: 'username',
       placeholder: 'Input username',
@@ -81,6 +81,12 @@ const UserProfileForm = (props: any) => {
       label: 'Password',
       name: 'hashsum',
       placeholder: 'Input password',
+      required: false,
+    },
+    {
+      label: 'Address',
+      name: 'address',
+      placeholder: 'Input address',
       required: false,
     },
   ];
@@ -117,7 +123,7 @@ const UserProfileForm = (props: any) => {
       .then((response) => response.json())
       .then(json => props.dispatch(updateUser(json)));
     
-    message.success('Data has been updated successfully', 3);
+      notification.success({ message: 'Data has been updated successfully', duration: 3 });
   }
 
   return (
