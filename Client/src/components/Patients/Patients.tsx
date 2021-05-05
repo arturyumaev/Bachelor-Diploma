@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { RootState, AppDispatch } from '../../store/store';
 import { ICommonUser } from '../../store/reducers/userProfileReducer';
 import { ModalContent } from './ModalContent';
-import Patient from '../../interfaces/Patient';
+import PatientsTable from './PatientsTable';
 import { fetchApi, HTTPMethod } from '../../api/Api';
 
 type StateProps = {
@@ -19,8 +19,6 @@ const Patients: React.FC<StateProps & OwnProps> = (props) => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   const handleOk = (data: object) => {
-    console.log('data', data);
-
     fetchApi('user/patient', HTTPMethod.POST, data)
       .then(response => response.json);
 
@@ -40,7 +38,7 @@ const Patients: React.FC<StateProps & OwnProps> = (props) => {
             title="New patient"
             visible={isModalVisible}
             okText="Create"
-            afterClose={() => console.log('closed modal')}
+            afterClose={() => {}}
             width={680}
             footer={null}
           >
@@ -52,7 +50,7 @@ const Patients: React.FC<StateProps & OwnProps> = (props) => {
         </ButtonLayout>
       }
       <PatientsLayout>
-        List
+        <PatientsTable />
       </PatientsLayout>
     </Container>
   );

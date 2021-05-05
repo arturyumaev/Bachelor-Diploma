@@ -23,8 +23,6 @@ const UserProfileForm = (props: any) => {
   const { userProfile } = props;
   const [form] = Form.useForm();
 
-  console.log(form.getFieldValue('birthDate'));
-
   const BaseFormFields: Array<IFormField> = [
     {
       label: 'First name',

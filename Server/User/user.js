@@ -51,4 +51,14 @@ router.post('/patient', jsonParser, async (req, res) => {
   res.json({ status: dbres.rowCount === 1 ? 'OK' : 'ERROR' });
 });
 
+router.get('/patient/:id', jsonParser, async (req, res) => {
+  res.set(responseHeaders);
+
+  const patientId = Number(req.params['id']);
+  const sqlQuery = patientQueryGenerator.generateGetPatient(patientId);
+  console.log(sqlQuery);
+  const result = await storageInterface.select(sqlQuery);
+  res.json({ patients: result.rows });
+})
+
 module.exports = router;

@@ -34,13 +34,11 @@ module.exports = class StorageInterface {
 
   create = async query => {
     const result = await this.client.query(query);
-
     return result;
   }
 
   select = async query => {
     const result = await this.client.query(query);
-
     return result;
   }
 

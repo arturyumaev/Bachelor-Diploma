@@ -3,18 +3,18 @@ module.exports = class GenerateQueriesPatient {
 
   generateGetUserInfo(username) {
     let sqlQuery = `
-        SELECT * FROM "Patient"
-        WHERE username = '${username}';
-      `;
+      SELECT * FROM "Patient"
+      WHERE username = '${username}';
+    `;
     console.log(sqlQuery);
     return sqlQuery;
   }
 
   generateAuthorize(username) {
     let sqlQuery = `
-        SELECT hashsum FROM "Patient"
-        WHERE username = '${username}';
-      `;
+      SELECT hashsum FROM "Patient"
+      WHERE username = '${username}';
+    `;
 
     return sqlQuery;
   }
@@ -35,6 +35,18 @@ module.exports = class GenerateQueriesPatient {
     `;
 
     console.log(sqlQuery);
+    return sqlQuery;
+  }
+
+  generateGetPatient(patientId) {
+    let sqlQuery = `
+      SELECT * FROM "Patient"
+      ${(patientId !== -1)
+        ? `WHERE id = ${patientId}`
+        : ''
+      }
+      ;
+    `;
 
     return sqlQuery;
   }

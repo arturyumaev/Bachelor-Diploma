@@ -35,3 +35,5 @@ select * from "Doctor";
 UPDATE "Patient"
 SET "firstName" = 'Acrhi', "lastName" = 'yuma'
 WHERE id = 1;
+
+SELECT * FROM "Patient"
