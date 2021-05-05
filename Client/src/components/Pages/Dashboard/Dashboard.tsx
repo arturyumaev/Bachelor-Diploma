@@ -11,7 +11,7 @@ import {
   PieChartOutlined,
   UserAddOutlined,
   ProfileOutlined,
-  UserOutlined,
+  TeamOutlined,
   ImportOutlined,
   EnvironmentOutlined,
 } from '@ant-design/icons';
@@ -75,7 +75,7 @@ const Dashboard = (props: any) => {
                 Appointments
               </Menu.Item>
               {(accessControl === 'Admin' || accessControl === 'Doctor') &&
-                <Menu.Item key="patients" icon={<UserOutlined />} onClick={() => setActiveTab('patients')}>
+                <Menu.Item key="patients" icon={<TeamOutlined />} onClick={() => setActiveTab('patients')}>
                   Patients
                 </Menu.Item>
               }

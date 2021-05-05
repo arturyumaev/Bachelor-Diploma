@@ -13,7 +13,7 @@ router.post('/', jsonParser, async (req, res) => {
   authorizationManager(req)
     .then(authResult => {
       console.log('authResult', authResult);
-      authResult.accessControl && res.cookie('session', `${authResult.accessControl}-abc`, { maxAge: 1000 * 60 * 15 });
+      authResult.accessControl && res.cookie('session', `${authResult.accessControl}-abc`, { maxAge: 1000 * 60 * 15 * 4 });
       res.json(authResult);
     });
 });

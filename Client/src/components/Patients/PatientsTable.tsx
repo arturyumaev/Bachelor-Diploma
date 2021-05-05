@@ -1,16 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { Table } from 'antd';
+import {
+  FormOutlined,
+  CloseSquareTwoTone,
+  EyeOutlined,
+} from '@ant-design/icons';
 import Loader from "react-loader-spinner";
 import { fetchApi, HTTPMethod } from '../../api/Api';
 import styled from 'styled-components';
+import Patient from '../../interfaces/Patient';
 
 const PatientsTable = () => {
   const [patientsLoading, setPatientsLoading] = useState<boolean>(true);
+  const [patients, setPatients] = useState<Array<Patient>>([]);
 
   useEffect(() => {
     setTimeout(() => {
       fetchApi('user/patient/-1', HTTPMethod.GET)
+        .then(result => result.json())
+        .then(data => setPatients(data.patients))
         .then(() => setPatientsLoading(false));
+
     }, 1000);
   }, []);
 
@@ -22,107 +32,64 @@ const PatientsTable = () => {
       render: (text: any) => <a>{text}</a>,
     },
     {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
+      title: 'Birth date',
+      dataIndex: 'birthDate',
+      key: 'birthDate',
     },
     {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
+      title: 'Phone',
+      dataIndex: 'phone',
+      key: 'phone',
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
     },
     {
       title: 'Action',
       key: 'action',
-      render: (text: any, record: any) => (
-        <>
-          <a>Invite {record.name}</a>
-          <a>Delete</a>
-        </>
-      ),
+      render: (text: any, record: any) => {
+        const iconStyles = { fontSize: '22px' };
+
+        return (
+          <ActionButtonsContainer>
+            <ActionIconLayout
+              onClick={() => {}}
+            >
+              <EyeOutlined
+                style={iconStyles}
+              />
+            </ActionIconLayout>
+            <ActionIconLayout
+              onClick={() => {}}
+            >
+              <FormOutlined
+                style={iconStyles}
+              />
+            </ActionIconLayout>
+            <ActionIconLayout
+              onClick={() => {}}
+            >
+              <CloseSquareTwoTone
+                twoToneColor="#eb2f96"
+                style={iconStyles}
+              />
+            </ActionIconLayout>
+          </ActionButtonsContainer>
+        );
+      }
     },
   ];
   
-  const data = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park',
-    },
-    {
-      key: '4',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-    },
-    {
-      key: '5',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-    },
-    {
-      key: '6',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park',
-    },
-    {
-      key: '7',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-    },
-    {
-      key: '8',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-    },
-    {
-      key: '9',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park',
-    },
-    {
-      key: '10',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park',
-    },
-    {
-      key: '11',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park',
-    },
-    {
-      key: '12',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park',
-    },
-    {
-      key: '13',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park',
-    },
-  ];
+  const patientsToRender = patients.map(p => ({
+    name: `${p.firstName} ${p.lastName}`,
+    birthDate: p.birthDate,
+    phone: p.phone,
+    email: p.email,
+  }));
+
+  console.log('patientsToRender', patientsToRender);
 
   return (
     <div>
@@ -141,20 +108,34 @@ const PatientsTable = () => {
       : (
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={patientsToRender}
         />
       )}
     </div>
   );
 };
 
-const LoadingScreen = styled.div`
-  width: 100%;
-  height: 300px;
+const FlexRow = styled.div`
   display: flex;
   flex-direction: row;
+`;
+
+const LoadingScreen = styled(FlexRow)`
+  width: 100%;
+  height: 300px;
   justify-content: center;
   align-items: center;
+`;
+
+const ActionButtonsContainer = styled(FlexRow)`
+`;
+
+const ActionIconLayout = styled.div`
+  margin-right: 8px;
+
+  &:hover {
+    cursor: pointer;
+  } 
 `;
 
 export default PatientsTable;
