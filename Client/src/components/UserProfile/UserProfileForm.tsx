@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import moment from 'moment';
 import getSession from '../../utils';
-import { Form, Input, Button, notification } from 'antd';
+import { Form, Input, Button, DatePicker, notification } from 'antd';
 import { Select } from 'antd';
 import { connect } from 'react-redux';
 import { fetchApi, HTTPMethod } from '../../api/Api';
@@ -19,8 +20,10 @@ interface IFormField {
 
 const UserProfileForm = (props: any) => {
   const session = getSession();
-  const [form] = Form.useForm();
   const { userProfile } = props;
+  const [form] = Form.useForm();
+
+  console.log(form.getFieldValue('birthDate'));
 
   const BaseFormFields: Array<IFormField> = [
     {
@@ -52,6 +55,19 @@ const UserProfileForm = (props: any) => {
       name: 'birthDate',
       placeholder: 'Input birth date',
       required: false,
+      component: <>
+        <DatePicker
+          defaultValue={
+            form.getFieldValue('birthDate') == undefined
+              ? userProfile.birthDate == ''
+                  ? null
+                  : moment(userProfile.birthDate)
+              : form.getFieldValue('birthDate')
+          }
+          onChange={(date, dateString) => form.setFieldsValue({ birthDate: date })}
+          style={{ width: '100%' }}
+        />
+      </>
     },
     {
       label: 'Gender',
@@ -117,12 +133,14 @@ const UserProfileForm = (props: any) => {
       ...form.getFieldsValue(),
       id: props.userProfile.id,
       accessControl: props.userProfile.accessControl,
+      birthDate: form.getFieldValue('birthDate') == null
+        ? ''
+        : moment(form.getFieldValue('birthDate')).format()
     };
 
     fetchApi('user', HTTPMethod.PUT, values)
       .then((response) => response.json())
       .then(json => props.dispatch(updateUser(json)));
-    
       notification.success({ message: 'Data has been updated successfully', duration: 3 });
   }
 
@@ -131,7 +149,10 @@ const UserProfileForm = (props: any) => {
       <Form
         form={form}
         layout="vertical"
-        initialValues={userProfile}
+        initialValues={{
+          ...userProfile,
+          birthDate: moment(userProfile.birthDate)
+        }}
         onFinish={handleOnFinish}
       >
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>

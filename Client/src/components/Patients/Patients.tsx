@@ -20,9 +20,10 @@ const Patients: React.FC<StateProps & OwnProps> = (props) => {
 
   const handleOk = (data: object) => {
     console.log('data', data);
+
     fetchApi('user/patient', HTTPMethod.POST, data)
-      .then(response => response.json)
-      .then(data => console.log(data));
+      .then(response => response.json);
+
     setIsModalVisible(false);
   };
 

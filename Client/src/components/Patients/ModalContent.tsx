@@ -1,7 +1,7 @@
 import { Form } from 'antd';
-import { useForm } from 'antd/lib/form/Form';
+import moment from 'moment';
 import React, { useState } from 'react';
-import { Select, Input, Button, notification } from 'antd';
+import { Select, Input, Button, DatePicker, notification } from 'antd';
 import styled from 'styled-components';
 
 interface IFormField {
@@ -84,6 +84,12 @@ export const ModalContent: React.FC<IComponentProps> = (props) => {
       name: 'birthDate',
       placeholder: 'Input birth date',
       required: true,
+      component: (
+        <DatePicker
+          style={{ width: '100%' }}
+          onChange={(date, _) => form.setFieldsValue({ birthDate: date })}
+        />
+      )
     },
     {
       label: 'Address',
@@ -112,7 +118,11 @@ export const ModalContent: React.FC<IComponentProps> = (props) => {
   ];
 
   const handleFinish = () => {
-    onSubmit(form.getFieldsValue());
+    const dataToSubmit = form.getFieldsValue();
+    onSubmit({
+      ...dataToSubmit,
+      birthDate: moment(dataToSubmit.birthDate).format(),
+    });
     form.resetFields();
     notification.success({ message: 'User has been successfully created' });
   }
