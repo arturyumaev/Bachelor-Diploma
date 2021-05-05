@@ -47,6 +47,11 @@ module.exports = class GenerateQueriesPatient {
       }
       ;
     `;
+    return sqlQuery;
+  }
+
+  generateDeletePatient(patientId) {
+    let sqlQuery = ``;
 
     return sqlQuery;
   }

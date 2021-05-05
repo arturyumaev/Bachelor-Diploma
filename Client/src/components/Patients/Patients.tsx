@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Table, Tag, Space, Modal, Button } from 'antd';
+import { UserAddOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import { RootState, AppDispatch } from '../../store/store';
 import { ICommonUser } from '../../store/reducers/userProfileReducer';
@@ -33,7 +34,10 @@ const Patients: React.FC<StateProps & OwnProps> = (props) => {
     <Container>
       {props.userProfile.accessControl === 'Admin' &&
         <ButtonLayout> 
-          <Button type="primary" onClick={() => setIsModalVisible(true)}>New patient</Button>
+          <Button type="primary" onClick={() => setIsModalVisible(true)}>
+            <UserAddOutlined />
+            New patient
+          </Button>
           <Modal
             title="New patient"
             visible={isModalVisible}
@@ -64,7 +68,7 @@ const Container = styled.div`
 const ButtonLayout = styled.div`
   display: flex;
   flex-direction: row-reverse;
-  padding-bottom: 8px;
+  padding-bottom: 16px;
 `;
 
 const PatientsLayout = styled.div`

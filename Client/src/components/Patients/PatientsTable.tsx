@@ -10,6 +10,14 @@ import { fetchApi, HTTPMethod } from '../../api/Api';
 import styled from 'styled-components';
 import Patient from '../../interfaces/Patient';
 
+type PatientColumnDescription = {
+  name: string;
+  birthDate: string;
+  phone: string;
+  email: string;
+  id: number;
+}
+
 const PatientsTable = () => {
   const [patientsLoading, setPatientsLoading] = useState<boolean>(true);
   const [patients, setPatients] = useState<Array<Patient>>([]);
@@ -23,6 +31,10 @@ const PatientsTable = () => {
 
     }, 1000);
   }, []);
+
+  const handleDeletePatient = (text: PatientColumnDescription, record: PatientColumnDescription) => {
+    console.log(record.id);
+  }
 
   const columns = [
     {
@@ -68,9 +80,7 @@ const PatientsTable = () => {
                 style={iconStyles}
               />
             </ActionIconLayout>
-            <ActionIconLayout
-              onClick={() => {}}
-            >
+            <ActionIconLayout onClick={() => handleDeletePatient(text, record)}>
               <CloseSquareTwoTone
                 twoToneColor="#eb2f96"
                 style={iconStyles}
@@ -82,14 +92,13 @@ const PatientsTable = () => {
     },
   ];
   
-  const patientsToRender = patients.map(p => ({
+  const patientsToRender: PatientColumnDescription[] = patients.map(p => ({
     name: `${p.firstName} ${p.lastName}`,
     birthDate: p.birthDate,
     phone: p.phone,
     email: p.email,
+    id: p.id,
   }));
-
-  console.log('patientsToRender', patientsToRender);
 
   return (
     <div>
