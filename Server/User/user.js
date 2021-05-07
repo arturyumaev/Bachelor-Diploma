@@ -10,7 +10,7 @@ const GenerateQueriesCommon = require('../Storage/PostgreSQLQuery/GenerateQuerie
 const GenerateQueriesPatient = require('../Storage/PostgreSQLQuery/GenerateQueriesPatient');
 const storageInterface = require('../connection');
 
-// Utils
+// Utils and services
 const EmailService = require('../EmailService/EmailService');
 const utils = require('../utils');
 const { generateNRandomNumbers, generatePassword } = utils;
@@ -47,8 +47,8 @@ router.post('/patient', jsonParser, async (req, res) => {
     accessControl: 'Patient',
   }
 
-  // const dbres = await storageInterface.create(patientQueryGenerator.generateNewPatient(newPatient));
-  const resp = emailService.sendAccessData(newPatient.firstName, username, password)
+  const dbres = await storageInterface.create(patientQueryGenerator.generateNewPatient(newPatient));
+  emailService.sendAccessData(newPatient.firstName, username, password)
     .then(
       (response) => res.json({ result: 'OK', status: response.status, text: response.text }),
       (err) => res.json({ result: 'ERROR', error: err })
