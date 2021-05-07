@@ -45,13 +45,16 @@ module.exports = class GenerateQueriesPatient {
         ? `WHERE id = ${patientId}`
         : ''
       }
-      ;
+      ORDER BY id DESC;
     `;
     return sqlQuery;
   }
 
   generateDeletePatient(patientId) {
-    let sqlQuery = ``;
+    let sqlQuery = `
+      DELETE FROM "Patient"
+      WHERE id = ${patientId};
+    `;
 
     return sqlQuery;
   }

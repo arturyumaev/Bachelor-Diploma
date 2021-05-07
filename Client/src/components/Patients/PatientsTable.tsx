@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Table } from 'antd';
+import { Table, Modal } from 'antd';
 import {
   FormOutlined,
   CloseSquareTwoTone,
   EyeOutlined,
+  ExclamationCircleOutlined,
 } from '@ant-design/icons';
 import Loader from "react-loader-spinner";
 import { fetchApi, HTTPMethod } from '../../api/Api';
 import styled from 'styled-components';
 import Patient from '../../interfaces/Patient';
+
+const { confirm } = Modal;
 
 type PatientColumnDescription = {
   name: string;
@@ -21,8 +24,11 @@ type PatientColumnDescription = {
 const PatientsTable = () => {
   const [patientsLoading, setPatientsLoading] = useState<boolean>(true);
   const [patients, setPatients] = useState<Array<Patient>>([]);
+  const [dataUpdated, setDataUpdated] = useState<boolean>(false);
 
   useEffect(() => {
+    setPatientsLoading(true);
+
     setTimeout(() => {
       fetchApi('user/patient/-1', HTTPMethod.GET)
         .then(result => result.json())
@@ -30,13 +36,33 @@ const PatientsTable = () => {
         .then(() => setPatientsLoading(false));
 
     }, 1000);
-  }, []);
+  }, [dataUpdated]);
 
-  const handleDeletePatient = (text: PatientColumnDescription, record: PatientColumnDescription) => {
-    console.log(record.id);
-  }
+  const showConfirm = (text: PatientColumnDescription, record: PatientColumnDescription) => {
+    confirm({
+      title: 'Do you want to delete patient?',
+      icon: <ExclamationCircleOutlined />,
+      content: 'This action cannot be undone',
+      onOk() {
+        fetchApi(`user/patient/${record.id}`, HTTPMethod.DELETE)
+          .then(res => res.json())
+          .then(data => console.log(data))
+          .then(() => setDataUpdated(!dataUpdated));
+      
+        console.log(record.id);
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  };
 
   const columns = [
+    {
+      title: '#id',
+      dataIndex: 'id',
+      key: 'id',
+    },
     {
       title: 'Name',
       dataIndex: 'name',
@@ -80,7 +106,7 @@ const PatientsTable = () => {
                 style={iconStyles}
               />
             </ActionIconLayout>
-            <ActionIconLayout onClick={() => handleDeletePatient(text, record)}>
+            <ActionIconLayout onClick={() => showConfirm(text, record)}>
               <CloseSquareTwoTone
                 twoToneColor="#eb2f96"
                 style={iconStyles}
@@ -93,11 +119,11 @@ const PatientsTable = () => {
   ];
   
   const patientsToRender: PatientColumnDescription[] = patients.map(p => ({
+    id: p.id,
     name: `${p.firstName} ${p.lastName}`,
     birthDate: p.birthDate,
     phone: p.phone,
     email: p.email,
-    id: p.id,
   }));
 
   return (

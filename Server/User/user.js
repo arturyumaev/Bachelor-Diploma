@@ -66,12 +66,8 @@ router.delete('/patient/:id', jsonParser, async (req, res) => {
 
   const patientId = Number(req.params['id']);
   const sqlQuery = patientQueryGenerator.generateDeletePatient(patientId);
-  console.log(sqlQuery);
-
-  // const result = await storageInterface.select(sqlQuery);
-  // res.json({ patients: result.rows });
-
-  res.json({ message: 'got delete request' });
+  const result = await storageInterface.delete(sqlQuery);
+  res.json({ patients: result.rows });
 });
 
 module.exports = router;

@@ -44,7 +44,11 @@ module.exports = class StorageInterface {
 
   update = async (query) => {
     const result = await this.client.query(query);
-    
+    return result;
+  }
+
+  delete = async (query) => {
+    const result = await this.client.query(query);
     return result;
   }
 
