@@ -43,7 +43,8 @@ const Patients: React.FC<StateProps & OwnProps> = (props) => {
         .then(response => response.json)
         .then(() => setConfirmLoading(false))
         .then(() => setIsModalVisible(false))
-        .then(() => notification.success({ message: 'User has been successfully created' }));
+        .then(() => notification.success({ message: 'User has been successfully created' }))
+        .then(() => setDataUpdated(!dataUpdated));
     }, 2000);
   };
 
@@ -62,7 +63,7 @@ const Patients: React.FC<StateProps & OwnProps> = (props) => {
           <Modal
             title="New patient"
             visible={isModalVisible}
-            afterClose={() => setDataUpdated(!dataUpdated)}
+            afterClose={() => {}}
             width={680}
             footer={null}
             confirmLoading={confirmLoading}

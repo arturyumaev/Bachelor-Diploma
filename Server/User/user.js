@@ -47,8 +47,12 @@ router.post('/patient', jsonParser, async (req, res) => {
     accessControl: 'Patient',
   }
 
-  const dbres = await storageInterface.create(patientQueryGenerator.generateNewPatient(newPatient));
-  res.json({ status: dbres.rowCount === 1 ? 'OK' : 'ERROR' });
+  // const dbres = await storageInterface.create(patientQueryGenerator.generateNewPatient(newPatient));
+  const resp = emailService.sendAccessData(newPatient.firstName, username, password)
+    .then(
+      (response) => res.json({ result: 'OK', status: response.status, text: response.text }),
+      (err) => res.json({ result: 'ERROR', error: err })
+    );
 });
 
 router.get('/patient/:id', jsonParser, async (req, res) => {
