@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Table, Tag, Space, Modal, Button } from 'antd';
+import { Table, Tag, Space, Modal, Button, notification, Spin } from 'antd';
 import { UserAddOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import { RootState, AppDispatch } from '../../store/store';
@@ -8,6 +8,8 @@ import { ICommonUser } from '../../store/reducers/userProfileReducer';
 import { ModalContent } from './ModalContent';
 import PatientsTable from './PatientsTable';
 import { fetchApi, HTTPMethod } from '../../api/Api';
+import Patient from '../../interfaces/Patient';
+
 
 type StateProps = {
   userProfile: ICommonUser;
@@ -18,12 +20,31 @@ type OwnProps = {}
 
 const Patients: React.FC<StateProps & OwnProps> = (props) => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
+
+  const [patientsLoading, setPatientsLoading] = useState<boolean>(true);
+  const [patients, setPatients] = useState<Array<Patient>>([]);
+  const [dataUpdated, setDataUpdated] = useState<boolean>(false);
+
+  useEffect(() => {
+    setPatientsLoading(true);
+    setTimeout(() => {
+      fetchApi('user/patient/-1', HTTPMethod.GET)
+        .then(result => result.json())
+        .then(data => setPatients(data.patients))
+        .then(() => setPatientsLoading(false));
+    }, 1000);
+  }, [dataUpdated]);
 
   const handleOk = (data: object) => {
-    fetchApi('user/patient', HTTPMethod.POST, data)
-      .then(response => response.json);
-
-    setIsModalVisible(false);
+    setConfirmLoading(true);
+    setTimeout(() => {
+      fetchApi('user/patient', HTTPMethod.POST, data)
+        .then(response => response.json)
+        .then(() => setConfirmLoading(false))
+        .then(() => setIsModalVisible(false))
+        .then(() => notification.success({ message: 'User has been successfully created' }));
+    }, 2000);
   };
 
   const handleCancel = () => {
@@ -41,20 +62,25 @@ const Patients: React.FC<StateProps & OwnProps> = (props) => {
           <Modal
             title="New patient"
             visible={isModalVisible}
-            okText="Create"
-            afterClose={() => {}}
+            afterClose={() => setDataUpdated(!dataUpdated)}
             width={680}
             footer={null}
+            confirmLoading={confirmLoading}
           >
             <ModalContent
               onSubmit={handleOk}
               onCancel={handleCancel}
+              confirmLoading={confirmLoading}
             />
           </Modal>
         </ButtonLayout>
       }
       <PatientsLayout>
-        <PatientsTable />
+        <PatientsTable
+          patients={patients}
+          patientsLoading={patientsLoading}
+          loadPatients={() => setDataUpdated(!dataUpdated)}
+        />
       </PatientsLayout>
     </Container>
   );

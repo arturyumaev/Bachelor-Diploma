@@ -1,7 +1,7 @@
 import { Form } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
-import { Select, Input, Button, DatePicker, notification } from 'antd';
+import { Select, Input, Button, DatePicker, Spin } from 'antd';
 import styled from 'styled-components';
 
 interface IFormField {
@@ -17,6 +17,7 @@ const { Option } = Select;
 interface IComponentProps {
   onSubmit: (data: object) => void;
   onCancel: () => void;
+  confirmLoading: boolean;
 }
 
 const tempPatientInitial = {
@@ -32,7 +33,7 @@ const tempPatientInitial = {
 }
 
 export const ModalContent: React.FC<IComponentProps> = (props) => {
-  const { onSubmit, onCancel } = props;
+  const { onSubmit, onCancel, confirmLoading } = props;
   const [form] = Form.useForm();
 
   const patientFormFields: Array<IFormField> = [
@@ -124,7 +125,6 @@ export const ModalContent: React.FC<IComponentProps> = (props) => {
       birthDate: moment(dataToSubmit.birthDate).format(),
     });
     form.resetFields();
-    notification.success({ message: 'User has been successfully created' });
   }
 
   const handleCancel = () => {
@@ -146,7 +146,7 @@ export const ModalContent: React.FC<IComponentProps> = (props) => {
               <Form.Item name={field.name} label={field.label} rules={[{ required: field.required }]} key={field.name}>
                 {field.component
                   ? field.component
-                  : <Input placeholder={field.placeholder}/>
+                  : <Input disabled={confirmLoading} placeholder={field.placeholder}/>
                 }
               </Form.Item>
             </FieldWrapper>
@@ -155,8 +155,11 @@ export const ModalContent: React.FC<IComponentProps> = (props) => {
         </Wrapper>
         <Form.Item>
           <ButtonWrapper>
-            <Button type="primary" htmlType="submit">
-              Create
+            <Button disabled={confirmLoading} type="primary" htmlType="submit">
+              {confirmLoading
+                ? <><Spin />&nbsp;Loading...</>
+                : <>Create</>
+              }
             </Button>
             <Button style={{ marginRight: '8px' }} onClick={handleCancel}>
               Cancel

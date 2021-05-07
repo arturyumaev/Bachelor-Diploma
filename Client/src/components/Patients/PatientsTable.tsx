@@ -21,22 +21,14 @@ type PatientColumnDescription = {
   id: number;
 }
 
-const PatientsTable = () => {
-  const [patientsLoading, setPatientsLoading] = useState<boolean>(true);
-  const [patients, setPatients] = useState<Array<Patient>>([]);
-  const [dataUpdated, setDataUpdated] = useState<boolean>(false);
+interface IComponentProps {
+  patients: Array<Patient>;
+  patientsLoading: boolean;
+  loadPatients: () => void;
+}
 
-  useEffect(() => {
-    setPatientsLoading(true);
-
-    setTimeout(() => {
-      fetchApi('user/patient/-1', HTTPMethod.GET)
-        .then(result => result.json())
-        .then(data => setPatients(data.patients))
-        .then(() => setPatientsLoading(false));
-
-    }, 1000);
-  }, [dataUpdated]);
+const PatientsTable: React.FC<IComponentProps> = (props) => {
+  const { patients, patientsLoading, loadPatients } = props;
 
   const showConfirm = (text: PatientColumnDescription, record: PatientColumnDescription) => {
     confirm({
@@ -47,7 +39,7 @@ const PatientsTable = () => {
         fetchApi(`user/patient/${record.id}`, HTTPMethod.DELETE)
           .then(res => res.json())
           .then(data => console.log(data))
-          .then(() => setDataUpdated(!dataUpdated));
+          .then(() => loadPatients());
       
         console.log(record.id);
       },
