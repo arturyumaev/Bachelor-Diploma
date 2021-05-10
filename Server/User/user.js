@@ -33,6 +33,8 @@ router.put('/', jsonParser, async (req, res) => {
   res.json(updatedUser.rows[0]);
 });
 
+/* PATIENTS */
+
 router.post('/patient', jsonParser, async (req, res) => {
   res.set(responseHeaders);
   const data = req.body;
@@ -76,6 +78,32 @@ router.delete('/patient/:id', jsonParser, async (req, res) => {
   res.json({ patients: result.rows });
 });
 
+/* DOCTORS */
+
+router.post('/doctor', jsonParser, async (req, res) => {
+  res.set(responseHeaders);
+  const data = req.body;
+  
+  const username = cyrillicToTranslit.transform(
+    `${data.firstName} ${data.lastName} `, '-',
+  ) + generateNRandomNumbers(2).join('');
+  const password = generatePassword();
+  
+  const newDoctor = {
+    ...data,
+    username,
+    hashsum: password,
+    accessControl: 'Doctor',
+  };
+
+  const dbres = await storageInterface.create(doctorQueryGenerator.generateNewDoctor(newDoctor));
+  emailService.sendAccessData(newDoctor.firstName, username, password)
+    .then(
+      (response) => res.json({ result: 'OK', status: response.status, text: response.text }),
+      (err) => res.json({ result: 'ERROR', error: err })
+    );
+});
+
 router.get('/doctor/:id', jsonParser, async (req, res) => {
   res.set(responseHeaders);
 
@@ -84,6 +112,15 @@ router.get('/doctor/:id', jsonParser, async (req, res) => {
   console.log(sqlQuery);
   const result = await storageInterface.select(sqlQuery);
   res.json({ doctors: result.rows });
+});
+
+router.delete('/doctor/:id', jsonParser, async (req, res) => {
+  res.set(responseHeaders);
+
+  const doctorId = Number(req.params['id']);
+  const sqlQuery = doctorQueryGenerator.generateDeleteDoctor(doctorId);
+  const result = await storageInterface.delete(sqlQuery);
+  res.json({ patients: result.rows });
 });
 
 module.exports = router;

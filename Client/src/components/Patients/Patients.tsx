@@ -32,7 +32,7 @@ const Patients: React.FC<StateProps & OwnProps> = (props) => {
         .then(result => result.json())
         .then(data => setPatients(data.patients))
         .then(() => setPatientsLoading(false));
-    }, 1000);
+    }, 800);
   }, [dataUpdated]);
 
   const handleOk = (data: object) => {

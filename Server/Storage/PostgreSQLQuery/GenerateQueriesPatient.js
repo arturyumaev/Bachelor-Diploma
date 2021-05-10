@@ -6,7 +6,6 @@ module.exports = class GenerateQueriesPatient {
       SELECT * FROM "Patient"
       WHERE username = '${username}';
     `;
-    console.log(sqlQuery);
     return sqlQuery;
   }
 
@@ -15,7 +14,6 @@ module.exports = class GenerateQueriesPatient {
       SELECT hashsum FROM "Patient"
       WHERE username = '${username}';
     `;
-
     return sqlQuery;
   }
 
@@ -33,8 +31,6 @@ module.exports = class GenerateQueriesPatient {
       INSERT INTO "Patient"(${keys.join(', ')})
         values (${values.join(', ')});
     `;
-
-    console.log(sqlQuery);
     return sqlQuery;
   }
 
@@ -55,7 +51,6 @@ module.exports = class GenerateQueriesPatient {
       DELETE FROM "Patient"
       WHERE id = ${patientId};
     `;
-
     return sqlQuery;
   }
 }

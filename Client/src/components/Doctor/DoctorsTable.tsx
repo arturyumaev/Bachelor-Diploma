@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import styled from 'styled-components';
+import Loader from "react-loader-spinner";
 import { Table, Modal } from 'antd';
 import {
-  FormOutlined,
   CloseSquareTwoTone,
   EyeOutlined,
   ExclamationCircleOutlined,
 } from '@ant-design/icons';
-import Loader from "react-loader-spinner";
+import Doctor from '../../interfaces/Doctor';
 import { fetchApi, HTTPMethod } from '../../api/Api';
-import styled from 'styled-components';
-import Patient from '../../interfaces/Patient';
 
 const { confirm } = Modal;
 
-type PatientColumnDescription = {
+type DoctorColumnDescription = {
   name: string;
   birthDate: string;
   phone: string;
@@ -22,26 +21,24 @@ type PatientColumnDescription = {
 }
 
 interface IComponentProps {
-  patients: Array<Patient>;
-  patientsLoading: boolean;
-  loadPatients: () => void;
+  doctors: Array<Doctor>;
+  doctorsLoading: boolean;
+  loadDoctors: () => void;
 }
 
-const PatientsTable: React.FC<IComponentProps> = (props) => {
-  const { patients, patientsLoading, loadPatients } = props;
+const DoctorsTable: React.FC<IComponentProps> = (props) => {
+  const { doctors, doctorsLoading, loadDoctors } = props;
 
-  const showConfirm = (text: PatientColumnDescription, record: PatientColumnDescription) => {
+  const showConfirm = (text: DoctorColumnDescription, record: DoctorColumnDescription) => {
     confirm({
-      title: 'Do you want to delete patient?',
+      title: 'Do you want to delete doctor?',
       icon: <ExclamationCircleOutlined />,
       content: 'This action cannot be undone',
       onOk() {
-        fetchApi(`user/patient/${record.id}`, HTTPMethod.DELETE)
+        fetchApi(`user/doctor/${record.id}`, HTTPMethod.DELETE)
           .then(res => res.json())
           .then(data => console.log(data))
-          .then(() => loadPatients());
-      
-        console.log(record.id);
+          .then(() => loadDoctors());
       },
       onCancel() {
         console.log('Cancel');
@@ -103,17 +100,17 @@ const PatientsTable: React.FC<IComponentProps> = (props) => {
     },
   ];
   
-  const patientsToRender: PatientColumnDescription[] = patients.map(p => ({
-    id: p.id,
-    name: `${p.firstName} ${p.lastName}`,
-    birthDate: p.birthDate,
-    phone: p.phone,
-    email: p.email,
+  const doctorsToRender: DoctorColumnDescription[] = doctors.map(d => ({
+    id: d.id,
+    name: `${d.firstName} ${d.lastName}`,
+    birthDate: d.birthDate,
+    phone: d.phone,
+    email: d.email,
   }));
 
   return (
     <div>
-      {patientsLoading
+      {doctorsLoading
       ? (
         <LoadingScreen>
           <Loader
@@ -121,14 +118,14 @@ const PatientsTable: React.FC<IComponentProps> = (props) => {
             color="#007bff"
             height={60}
             width={60}
-            visible={patientsLoading}
+            visible={doctorsLoading}
           />
         </LoadingScreen>
       )
       : (
         <Table
           columns={columns}
-          dataSource={patientsToRender}
+          dataSource={doctorsToRender}
         />
       )}
     </div>
@@ -147,8 +144,7 @@ const LoadingScreen = styled(FlexRow)`
   align-items: center;
 `;
 
-const ActionButtonsContainer = styled(FlexRow)`
-`;
+const ActionButtonsContainer = styled(FlexRow)``;
 
 const ActionIconLayout = styled.div`
   margin-right: 8px;
@@ -158,4 +154,4 @@ const ActionIconLayout = styled.div`
   } 
 `;
 
-export default PatientsTable;
+export default DoctorsTable;

@@ -6,7 +6,6 @@ module.exports = class GenerateQueriesDoctor {
         SELECT * FROM "Doctor"
         WHERE username = '${username}';
       `;
-      console.log(sqlQuery);
       return sqlQuery;
     }
   
@@ -15,7 +14,22 @@ module.exports = class GenerateQueriesDoctor {
         SELECT hashsum FROM "Doctor"
         WHERE username = '${username}';
       `;
+      return sqlQuery;
+    }
+
+    generateNewDoctor(data) {
+      let keys = [];
+      let values = [];
   
+      for (let key in data) {
+        keys.push(`"${key}"`);
+        values.push(`'${data[key]}'`);
+      }
+  
+      let sqlQuery = `
+        INSERT INTO "Doctor"(${keys.join(', ')})
+          values (${values.join(', ')});
+      `;
       return sqlQuery;
     }
 
@@ -36,7 +50,14 @@ module.exports = class GenerateQueriesDoctor {
         DELETE FROM "Doctor"
         WHERE id = ${doctorId};
       `;
-  
+      return sqlQuery;
+    }
+
+    generateDeleteDoctor(doctorId) {
+      let sqlQuery = `
+        DELETE FROM "Doctor"
+        WHERE id = ${doctorId};
+      `;
       return sqlQuery;
     }
   }
