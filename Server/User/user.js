@@ -8,6 +8,7 @@ const responseHeaders = require('../responseConfig');
 // Storage
 const GenerateQueriesCommon = require('../Storage/PostgreSQLQuery/GenerateQueriesCommon');
 const GenerateQueriesPatient = require('../Storage/PostgreSQLQuery/GenerateQueriesPatient');
+const GenerateQueriesDoctor = require('../Storage/PostgreSQLQuery/GenerateQueriesDoctor');
 const storageInterface = require('../connection');
 
 // Utils and services
@@ -19,6 +20,7 @@ const jsonParser = bodyParser.json();
 
 const commonQueryGenerator = new GenerateQueriesCommon();
 const patientQueryGenerator = new GenerateQueriesPatient();
+const doctorQueryGenerator = new GenerateQueriesDoctor();
 const cyrillicToTranslit = new cyrillicToTranslitJs();
 const emailService = new EmailService();
 
@@ -72,6 +74,16 @@ router.delete('/patient/:id', jsonParser, async (req, res) => {
   const sqlQuery = patientQueryGenerator.generateDeletePatient(patientId);
   const result = await storageInterface.delete(sqlQuery);
   res.json({ patients: result.rows });
+});
+
+router.get('/doctor/:id', jsonParser, async (req, res) => {
+  res.set(responseHeaders);
+
+  const doctorId = Number(req.params['id']);
+  const sqlQuery = doctorQueryGenerator.generateGetDoctor(doctorId);
+  console.log(sqlQuery);
+  const result = await storageInterface.select(sqlQuery);
+  res.json({ doctors: result.rows });
 });
 
 module.exports = router;

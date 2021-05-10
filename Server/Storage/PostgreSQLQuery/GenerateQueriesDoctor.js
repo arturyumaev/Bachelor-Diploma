@@ -18,5 +18,26 @@ module.exports = class GenerateQueriesDoctor {
   
       return sqlQuery;
     }
+
+    generateGetDoctor(doctorId) {
+      let sqlQuery = `
+        SELECT * FROM "Doctor"
+        ${(doctorId !== -1)
+          ? `WHERE id = ${doctorId}`
+          : ''
+        }
+        ORDER BY id DESC;
+      `;
+      return sqlQuery;
+    }
+  
+    generateDeleteDoctor(doctorId) {
+      let sqlQuery = `
+        DELETE FROM "Doctor"
+        WHERE id = ${doctorId};
+      `;
+  
+      return sqlQuery;
+    }
   }
   

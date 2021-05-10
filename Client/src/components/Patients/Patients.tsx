@@ -10,7 +10,6 @@ import PatientsTable from './PatientsTable';
 import { fetchApi, HTTPMethod } from '../../api/Api';
 import Patient from '../../interfaces/Patient';
 
-
 type StateProps = {
   userProfile: ICommonUser;
   dispatch: AppDispatch;

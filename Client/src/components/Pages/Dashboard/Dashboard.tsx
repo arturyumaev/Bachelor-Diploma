@@ -20,6 +20,7 @@ import Analytics from '../../Analytics';
 import { connect } from 'react-redux';
 import userProfileInit from '../../../store/actionCreators/userProfile/userProfileInit';
 import Patients from '../../Patients/Patients';
+import Doctors from '../../Doctor/Doctors';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -52,7 +53,7 @@ const Dashboard = (props: any) => {
     profile: <UserProfile />,
     appointments: <>appointments</>,
     patients: <Patients />,
-    doctors: <>doctors</>,
+    doctors: <Doctors />,
     locations: <>Locations</>,
   };
  
