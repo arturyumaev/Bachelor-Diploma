@@ -1,8 +1,10 @@
 import { Form } from 'antd';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Select, Input, Button, DatePicker, Spin } from 'antd';
 import styled from 'styled-components';
+import { fetchApi, HTTPMethod } from '../../api/Api';
+import Location from '../../interfaces/Location';
 
 interface IFormField {
   label: string;
@@ -27,7 +29,7 @@ const tempDoctorInitial = {
   phone: '',
   gender: null,
   address: '',
-  locationId: '1',
+  locationId: 1,
   emergencyContactName: '',
   emergencyContactPhone: '',
   emergencyContactRelation: '',
@@ -36,6 +38,19 @@ const tempDoctorInitial = {
 export const ModalContent: React.FC<IComponentProps> = (props) => {
   const { onSubmit, onCancel, confirmLoading } = props;
   const [form] = Form.useForm();
+  const [locations, setLocations] = useState<Array<Location>>([]);
+  const [locationsRecieved, setLocationsRecieved] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!locationsRecieved) {
+      fetchApi('location/-1', HTTPMethod.GET)
+      .then(result => result.json())
+      .then(data => setLocations(data.locations))
+      .then(() => setLocationsRecieved(true));
+    }
+  });
+
+  console.log(locations);
 
   const doctorFormFields: Array<IFormField> = [
     {
@@ -98,6 +113,18 @@ export const ModalContent: React.FC<IComponentProps> = (props) => {
       name: 'locationId',
       placeholder: 'Select location',
       required: true,
+      component: (
+        <Select
+          // value={1}
+          placeholder="Select location"
+          onChange={(value, option) => {
+            console.log({ value, option });
+            // form.setFieldsValue({ gender: nextValue });
+          }}
+        >
+          {locations.map(l => <Option value={l.id}>{l.locationName}</Option>)}
+        </Select>
+      ),
     },
     {
       label: 'Address',
