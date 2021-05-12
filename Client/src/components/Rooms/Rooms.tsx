@@ -5,11 +5,11 @@ import { UserAddOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import { RootState, AppDispatch } from '../../store/store';
 import { ICommonUser } from '../../store/reducers/userProfileReducer';
-// import { ModalContent } from './ModalContent';
-// import PatientsTable from './PatientsTable';
+import { ModalContent } from './ModalContent';
 import { fetchApi, HTTPMethod } from '../../api/Api';
 import { Room } from '../../interfaces/Room';
 import RoomsTable from './RoomsTable';
+import Location from '../../interfaces/Location';
 
 type StateProps = {
   userProfile: ICommonUser;
@@ -26,6 +26,20 @@ const Rooms: React.FC<StateProps & OwnProps> = (props) => {
   const [rooms, setRooms] = useState<Array<Room>>([]);
   const [dataUpdated, setDataUpdated] = useState<boolean>(false);
 
+  const [locations, setLocations] = useState<Array<Location>>([]);
+  const [locationsRecieved, setLocationsRecieved] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!locationsRecieved) {
+      setTimeout(() => {
+        fetchApi('location/-1', HTTPMethod.GET)
+          .then(result => result.json())
+          .then(data => setLocations(data.locations))
+          .then(() => setLocationsRecieved(true));
+      }, 1200);
+    }
+  });
+
   useEffect(() => {
     setRoomsLoading(true);
     setTimeout(() => {
@@ -37,6 +51,7 @@ const Rooms: React.FC<StateProps & OwnProps> = (props) => {
   }, [dataUpdated]);
 
   const handleOk = (data: object) => {
+    console.log(data);
     setConfirmLoading(true);
     setTimeout(() => {
       fetchApi('room', HTTPMethod.POST, data)
@@ -68,17 +83,19 @@ const Rooms: React.FC<StateProps & OwnProps> = (props) => {
             footer={null}
             confirmLoading={confirmLoading}
           >
-            {/* <ModalContent
+            <ModalContent
+              locations={locations}
               onSubmit={handleOk}
               onCancel={handleCancel}
               confirmLoading={confirmLoading}
-            /> */}
+            />
           </Modal>
         </ButtonLayout>
       }
       <RoomsLayout>
-        rooms here
         <RoomsTable
+          locations={locations}
+          locationsRecieved={locationsRecieved}
           rooms={rooms}
           roomsLoading={roomsLoading}
           loadRooms={() => setDataUpdated(!dataUpdated)}

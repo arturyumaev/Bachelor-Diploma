@@ -113,11 +113,9 @@ export const ModalContent: React.FC<IComponentProps> = (props) => {
       required: true,
       component: (
         <Select
-          // value={1}
           placeholder="Select location"
           onChange={(value, option) => {
-            console.log({ value, option });
-            // form.setFieldsValue({ gender: nextValue });
+            form.setFieldsValue({ locationId: value });
           }}
         >
           {locations.map(l => <Option value={l.id}>{l.locationName}</Option>)}

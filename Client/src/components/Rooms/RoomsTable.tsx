@@ -24,26 +24,15 @@ type RoomColumnDescription = {
 }
 
 interface IComponentProps {
+  locations: Location[];
+  locationsRecieved: boolean;
   rooms: Array<Room>;
   roomsLoading: boolean;
   loadRooms: () => void;
 }
 
 const RoomsTable: React.FC<IComponentProps> = (props) => {
-  const { rooms, roomsLoading, loadRooms } = props;
-  const [locations, setLocations] = useState<Array<Location>>([]);
-  const [locationsRecieved, setLocationsRecieved] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (!locationsRecieved) {
-      setTimeout(() => {
-        fetchApi('location/-1', HTTPMethod.GET)
-          .then(result => result.json())
-          .then(data => setLocations(data.locations))
-          .then(() => setLocationsRecieved(true));
-      }, 1200);
-    }
-  });
+  const { locations, locationsRecieved, rooms, roomsLoading, loadRooms } = props;
 
   const showConfirm = (text: RoomColumnDescription, record: RoomColumnDescription) => {
     confirm({
