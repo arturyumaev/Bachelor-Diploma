@@ -24,6 +24,7 @@ import userProfileInit from '../../../store/actionCreators/userProfile/userProfi
 import Patients from '../../Patients/Patients';
 import Doctors from '../../Doctor/Doctors';
 import Locations from '../../Locations/Locations';
+import Rooms from '../../Rooms/Rooms';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -59,7 +60,7 @@ const Dashboard = (props: any) => {
     patients: <Patients />,
     doctors: <Doctors />,
     locations: <Locations />,
-    rooms: <>Here are rooms info</>,
+    rooms: <Rooms />,
   };
  
   return getSession()

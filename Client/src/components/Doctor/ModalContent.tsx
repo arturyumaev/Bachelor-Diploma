@@ -50,8 +50,6 @@ export const ModalContent: React.FC<IComponentProps> = (props) => {
     }
   });
 
-  console.log(locations);
-
   const doctorFormFields: Array<IFormField> = [
     {
       label: 'First name',

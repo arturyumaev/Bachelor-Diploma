@@ -102,6 +102,7 @@ create table if not exists "AppointmentProcedure" (
     id serial unique,
     name varchar(400) not null,
     "doctorId" int not null,
+    "locationId" int not null,
     duration int not null,
     price int not null,
     notes text not null,
