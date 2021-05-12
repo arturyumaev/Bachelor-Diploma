@@ -1,5 +1,5 @@
-create type "AppointmentStatus" as enum ('Confirmed', 'In Process', 'Done', 'Canceled');
-create type "Currency" as enum ('РУБ', 'USD');
+create type "AppointmentStatus" as enum ('Created', 'In Process', 'Done', 'Canceled');
+create type "AppointmentPaymentStatus" as enum('Paid', 'NotPaid');
 create type "Gender" as enum ('Male', 'Female', 'Other');
 create type "AccessControl" as enum ('Admin', 'Doctor', 'Patient');
 
@@ -21,6 +21,7 @@ create table if not exists "Location" (
     "locationName" varchar(50) not null ,
     address varchar(300) not null ,
     phone varchar(50) not null ,
+    email varchar not null ,
 
     primary key (id)
 );
@@ -47,14 +48,18 @@ create table if not exists "Patient" (
 
 create table if not exists "Appointment" (
     id serial unique,
-    name varchar(100) not null,
-    time timestamp not null,
-    duration int not null,
+    "scheduledTime" varchar not null,
+    "scheduledEndTime" varchar not null,
+    created varchar not null,
     status "AppointmentStatus" not null,
+    "paymentStatus" "AppointmentPaymentStatus" null,
     notes text not null,
+
     "patientId" int not null,
     "doctorId" int not null,
-    "locationId" int not null,
+    "appointmentProcedureId" int not null, /* Ids from doctor's available */
+    "roomId" int not null, /* Sets from app proc */
+    "locationId" int not null, /* Sets from doctor */
 
     primary key (id),
 
@@ -68,28 +73,49 @@ create table if not exists "Appointment" (
 
     constraint "fk_locationId"
         foreign key ("locationId")
+        references "Location"(id),
+
+    constraint "fk_roomId"
+        foreign key ("roomId")
+        references "Room"(id),
+
+    constraint "fk_appointmentProcedureId"
+        foreign key ("roomId")
+        references "AppointmentProcedure"(id)
+);
+
+create table if not exists "Room" (
+    id serial unique,
+    name varchar not null,
+    floor int not null,
+    notes text not null,
+    "locationId" int not null,
+
+    primary key (id),
+
+    constraint "fk_locationId"
+        foreign key ("locationId")
         references "Location"(id)
 );
 
 create table if not exists "AppointmentProcedure" (
     id serial unique,
-    "appointmentId" int not null,
-    "procedureName" varchar(400) not null,
+    name varchar(400) not null,
     "doctorId" int not null,
     duration int not null,
-    room varchar(50) not null,
     price int not null,
-    currency "Currency" not null,
+    notes text not null,
+    "roomId" int not null,
 
     primary key (id),
 
-    constraint "fk_appointmentId"
-      foreign key ("appointmentId")
-	  references "Appointment"(id),
-
 	constraint "fk_doctorId"
         foreign key ("doctorId")
-        references "Doctor"(id)
+        references "Doctor"(id),
+
+    constraint "fk_roomId"
+        foreign key ("roomId")
+        references "Room"(id)
 );
 
 create table if not exists  "Admin" (

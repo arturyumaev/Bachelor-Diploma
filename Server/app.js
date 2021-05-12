@@ -1,22 +1,23 @@
 const express = require('express');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const app = express();
+
+const port = 3000;
+const corsConfig = { credentials: true, origin: 'http://localhost:8080' };
 
 /* Routers */
 const auth = require('./Auth/auth');
 const logout = require('./Auth/logout');
 const user = require('./User/user');
-
-const port = 3000;
-const corsConfig = { credentials: true, origin: 'http://localhost:8080' };
+const location = require('./Location/location');
 
 app.use(cors(corsConfig));
 app.use(cookieParser());
 app.use('/auth', auth);
 app.use('/logout', logout);
 app.use('/user', user);
-
+app.use('/location', location);
 
 app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}`)

@@ -7,13 +7,15 @@ import getSession from '../../../utils';
 import { GlobalContext } from '../../../App';
 import { Layout, Menu, Breadcrumb } from 'antd';
 import {
-  DesktopOutlined,
+  CalendarOutlined,
   PieChartOutlined,
   UserAddOutlined,
   ProfileOutlined,
   TeamOutlined,
   ImportOutlined,
   EnvironmentOutlined,
+  ApartmentOutlined,
+  ReconciliationOutlined,
 } from '@ant-design/icons';
 import UserProfile from '../../UserProfile/UserProfile';
 import Analytics from '../../Analytics';
@@ -21,6 +23,7 @@ import { connect } from 'react-redux';
 import userProfileInit from '../../../store/actionCreators/userProfile/userProfileInit';
 import Patients from '../../Patients/Patients';
 import Doctors from '../../Doctor/Doctors';
+import Locations from '../../Locations/Locations';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -52,9 +55,11 @@ const Dashboard = (props: any) => {
     dashboard: <Analytics />,
     profile: <UserProfile />,
     appointments: <>appointments</>,
+    procedures: <>Procedures data</>,
     patients: <Patients />,
     doctors: <Doctors />,
-    locations: <>Locations</>,
+    locations: <Locations />,
+    rooms: <>Here are rooms info</>,
   };
  
   return getSession()
@@ -72,8 +77,11 @@ const Dashboard = (props: any) => {
               <Menu.Item key="profile" icon={<ProfileOutlined />} onClick={() => setActiveTab('profile')}>
                 Profile
               </Menu.Item>
-              <Menu.Item key="appointments" icon={<DesktopOutlined />} onClick={() => setActiveTab('appointments')}>
+              <Menu.Item key="appointments" icon={<CalendarOutlined />} onClick={() => setActiveTab('appointments')}>
                 Appointments
+              </Menu.Item>
+              <Menu.Item key="procedures" icon={<ReconciliationOutlined />} onClick={() => setActiveTab('procedures')}>
+                Procedures
               </Menu.Item>
               {(accessControl === 'Admin' || accessControl === 'Doctor') &&
                 <Menu.Item key="patients" icon={<TeamOutlined />} onClick={() => setActiveTab('patients')}>
@@ -88,6 +96,11 @@ const Dashboard = (props: any) => {
               {accessControl === 'Admin' &&
                 <Menu.Item key="locations" icon={<EnvironmentOutlined />} onClick={() => setActiveTab('locations')}>
                   Locations
+                </Menu.Item>
+              }
+              {(accessControl === 'Admin' || accessControl === 'Doctor') &&
+                <Menu.Item key="rooms" icon={<ApartmentOutlined />} onClick={() => setActiveTab('rooms')}>
+                  Rooms
                 </Menu.Item>
               }
             </Menu>
