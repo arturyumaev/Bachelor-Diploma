@@ -1,33 +1,39 @@
 import React from 'react';
 import styled from 'styled-components';
 import Loader from "react-loader-spinner";
-import { Table, Modal } from 'antd';
+import moment from 'moment';
+import { Table, Modal, DatePicker } from 'antd';
 import {
   CloseSquareTwoTone,
   EyeOutlined,
   ExclamationCircleOutlined,
+  LoadingOutlined,
 } from '@ant-design/icons';
 import Doctor from '../../interfaces/Doctor';
 import { fetchApi, HTTPMethod } from '../../api/Api';
+import Location from '../../interfaces/Location';
 
 const { confirm } = Modal;
 
 type DoctorColumnDescription = {
+  id: number;
   name: string;
   birthDate: string;
   phone: string;
   email: string;
-  id: number;
+  locationId: number;
 }
 
 interface IComponentProps {
+  locations: Location[];
+  locationsRecieved: boolean;
   doctors: Array<Doctor>;
   doctorsLoading: boolean;
   loadDoctors: () => void;
 }
 
 const DoctorsTable: React.FC<IComponentProps> = (props) => {
-  const { doctors, doctorsLoading, loadDoctors } = props;
+  const { locations, locationsRecieved, doctors, doctorsLoading, loadDoctors } = props;
 
   const showConfirm = (text: DoctorColumnDescription, record: DoctorColumnDescription) => {
     confirm({
@@ -62,6 +68,14 @@ const DoctorsTable: React.FC<IComponentProps> = (props) => {
       title: 'Birth date',
       dataIndex: 'birthDate',
       key: 'birthDate',
+      render: (text: any, record: any) => {
+        console.log({ text, record });
+        return (
+          <DatePickerInputWrapper>
+            <DatePicker defaultValue={moment(text)} disabled />
+          </DatePickerInputWrapper>
+        );
+      },
     },
     {
       title: 'Phone',
@@ -72,6 +86,16 @@ const DoctorsTable: React.FC<IComponentProps> = (props) => {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
+    },
+    {
+      title: 'Location',
+      dataIndex: 'locationId',
+      key: 'locationId',
+      render: (text: any, record: any) => {
+        return locationsRecieved
+          ? <>{locations.filter(l => l.id == record.locationId)[0].locationName}</>
+          : <LoadingOutlined />;
+      },
     },
     {
       title: 'Action',
@@ -106,6 +130,7 @@ const DoctorsTable: React.FC<IComponentProps> = (props) => {
     birthDate: d.birthDate,
     phone: d.phone,
     email: d.email,
+    locationId: d.locationId,
   }));
 
   return (
@@ -152,6 +177,12 @@ const ActionIconLayout = styled.div`
   &:hover {
     cursor: pointer;
   } 
+`;
+
+const DatePickerInputWrapper = styled.div`
+  .ant-picker-input {
+    color: black !important;
+  }
 `;
 
 export default DoctorsTable;

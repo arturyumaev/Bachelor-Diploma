@@ -9,6 +9,7 @@ import { ICommonUser } from '../../store/reducers/userProfileReducer';
 import { AppDispatch, RootState } from '../../store/store';
 import DoctorsTable from './DoctorsTable';
 import { ModalContent } from './ModalContent';
+import Location from '../../interfaces/Location';
 
 type StateProps = {
   userProfile: ICommonUser;
@@ -24,6 +25,18 @@ const Doctors: React.FC<OwnProps & StateProps> = (props) => {
   const [doctorsLoading, setDoctorsLoading] = useState<boolean>(true);
   const [doctors, setDoctors] = useState<Array<Doctor>>([]);
   const [dataUpdated, setDataUpdated] = useState<boolean>(false);
+
+  const [locations, setLocations] = useState<Array<Location>>([]);
+  const [locationsRecieved, setLocationsRecieved] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!locationsRecieved) {
+      fetchApi('location/-1', HTTPMethod.GET)
+        .then(result => result.json())
+        .then(data => setLocations(data.locations))
+        .then(() => setLocationsRecieved(true));
+    }
+  });
 
   useEffect(() => {
     setDoctorsLoading(true);
@@ -77,6 +90,8 @@ const Doctors: React.FC<OwnProps & StateProps> = (props) => {
       }
       <DoctorsLayout>
         <DoctorsTable
+          locationsRecieved={locationsRecieved}
+          locations={locations}
           doctors={doctors}
           doctorsLoading={doctorsLoading}
           loadDoctors={() => setDataUpdated(!dataUpdated)}

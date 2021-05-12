@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Table, Tag, Space, Modal, Button, notification, Spin } from 'antd';
-import { UserAddOutlined } from '@ant-design/icons';
+import { ApartmentOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import { RootState, AppDispatch } from '../../store/store';
 import { ICommonUser } from '../../store/reducers/userProfileReducer';
@@ -72,7 +72,7 @@ const Rooms: React.FC<StateProps & OwnProps> = (props) => {
       {props.userProfile.accessControl === 'Admin' &&
         <ButtonLayout> 
           <Button type="primary" onClick={() => setIsModalVisible(true)}>
-            <UserAddOutlined />
+            <ApartmentOutlined />
             New Room
           </Button>
           <Modal
