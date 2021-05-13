@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Table, Tag, Space, Modal, Button, notification, Spin } from 'antd';
+import { Modal, Button, notification, Typography } from 'antd';
 import { ReconciliationOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import { RootState, AppDispatch } from '../../store/store';
@@ -13,6 +13,8 @@ import Location from '../../interfaces/Location';
 import Doctor from '../../interfaces/Doctor';
 import ProceduresTable from './ProceduresTable';
 import AppointmentProcedure from '../../interfaces/Appointment/AppointmentProcedure';
+
+const { Title, Text } = Typography;
 
 type StateProps = {
   userProfile: ICommonUser;
@@ -95,6 +97,11 @@ const Procedures: React.FC<StateProps & OwnProps> = (props) => {
             <ReconciliationOutlined />
             New procedure
           </Button>
+          <Title level={3} style={{ marginLeft: '15px' }}>
+            <Text type="secondary">
+              Filters
+            </Text>
+          </Title>
           <Modal
             title="New procedure"
             visible={isModalVisible}
@@ -134,7 +141,12 @@ const Container = styled.div`
 const ButtonLayout = styled.div`
   display: flex;
   flex-direction: row-reverse;
+  justify-content: space-between;
   padding-bottom: 16px;
+
+  .ant-typography {
+    margin-bottom: 0px;
+  }
 `;
 
 const ProceduresLayout = styled.div``;

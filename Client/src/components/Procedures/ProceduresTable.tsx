@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Modal } from 'antd';
+import { Table, Modal, Select } from 'antd';
 import {
   CloseSquareTwoTone,
   ExclamationCircleOutlined,
@@ -11,7 +11,9 @@ import { Room } from '../../interfaces/Room';
 import Location from '../../interfaces/Location';
 import Doctor from '../../interfaces/Doctor';
 import AppointmentProcedure from '../../interfaces/Appointment/AppointmentProcedure';
+import { filter } from 'lodash';
 
+const { Option } = Select;
 const { confirm } = Modal;
 
 type ProcedureColumnDescription = {
@@ -33,10 +35,44 @@ interface IComponentProps {
   loadProcedures: () => void;
 }
 
+interface IFilterOptions {
+  doctorId?: number;
+  locationId?: number;
+  roomId?: number;
+}
+
+const defaultFilterOptions: IFilterOptions = {
+  doctorId: undefined,
+  locationId: undefined,
+  roomId: undefined,
+}
+
+const filterOnOptions = (
+  procedures: AppointmentProcedure[],
+  filterOptions: IFilterOptions,
+  ): AppointmentProcedure[] => {
+  const filteredProcedures = procedures
+    .filter(p => filterOptions.doctorId
+      ? p.doctorId == filterOptions.doctorId
+      : true
+    )
+    .filter(p => filterOptions.locationId
+      ? p.locationId == filterOptions.locationId
+      : true
+    )
+    .filter(p => filterOptions.roomId
+      ? p.roomId == filterOptions.roomId
+      : true
+    );
+
+  return filteredProcedures;
+};
+
 const ProceduresTable: React.FC<IComponentProps> = (props) => {
   const { procedures, locations, rooms, doctors, loadProcedures } = props;
 
   const [dataToRender, setDataToRender] = useState<AppointmentProcedure[]>(procedures);
+  const [filterOptions, setFilterOptions] = useState<IFilterOptions>(defaultFilterOptions);
 
   useEffect(() => {
     setDataToRender(procedures);
@@ -141,20 +177,74 @@ const ProceduresTable: React.FC<IComponentProps> = (props) => {
       }
     },
   ];
-  
-  const proceduresToRender: ProcedureColumnDescription[] = dataToRender.map(p => ({
-    id: p.id,
-    name: p.name,
-    doctorId: p.doctorId,
-    locationId: p.locationId,
-    roomId: p.roomId,
-    duration: p.duration,
-    price: p.price,
-    notes: p.notes,
+
+  const proceduresToRender: ProcedureColumnDescription[] = filterOnOptions(dataToRender, filterOptions)
+    .map(p => ({
+      id: p.id,
+      name: p.name,
+      doctorId: p.doctorId,
+      locationId: p.locationId,
+      roomId: p.roomId,
+      duration: p.duration,
+      price: p.price,
+      notes: p.notes,
   }));
 
   return (
     <Container>
+      <FiltersContainer>
+        <FilterOptionWrapper>
+          <Select
+            showSearch
+            allowClear
+            style={{ width: '100%' }}
+            placeholder="Select a doctor"
+            optionFilterProp="children"
+            onChange={(value: number, option: any) => setFilterOptions({ ...filterOptions, doctorId: value })}
+            filterOption={(input, option: any) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {doctors.map(d => <Option key={d.id} value={d.id}>{`${d.firstName} ${d.lastName}`}</Option>)}
+          </Select>
+        </FilterOptionWrapper>
+        <FilterOptionWrapper>
+          <Select
+            showSearch
+            allowClear
+            style={{ width: '100%' }}
+            placeholder="Select a location"
+            optionFilterProp="children"
+            onChange={(value: number, option: any) => setFilterOptions({ ...filterOptions, locationId: value })}
+            filterOption={(input, option: any) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {locations.map(l => <Option key={l.id} value={l.id}>{l.locationName}</Option>)}
+          </Select>
+        </FilterOptionWrapper>
+        <FilterOptionWrapper>
+          <Select
+            disabled={!filterOptions.locationId}
+            showSearch
+            allowClear
+            style={{ width: '100%' }}
+            placeholder="Select a room"
+            optionFilterProp="children"
+            onChange={(value: number, option: any) => setFilterOptions({ ...filterOptions, roomId: value })}
+            filterOption={(input, option: any) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {
+              (filterOptions.locationId
+                ? rooms.filter(r => r.locationId == filterOptions.locationId)
+                : rooms
+              ).map(r => <Option key={r.id} value={r.id}>{r.name}</Option>)
+            }
+          </Select>
+        </FilterOptionWrapper>
+      </FiltersContainer>
       <Table
         columns={columns}
         dataSource={proceduresToRender}
@@ -170,13 +260,6 @@ const FlexRow = styled.div`
 
 const Container = styled.div``;
 
-const LoadingScreen = styled(FlexRow)`
-  width: 100%;
-  height: 300px;
-  justify-content: center;
-  align-items: center;
-`;
-
 const ActionButtonsContainer = styled(FlexRow)``;
 
 const ActionIconLayout = styled.div`
@@ -186,5 +269,13 @@ const ActionIconLayout = styled.div`
     cursor: pointer;
   } 
 `;
+
+const FiltersContainer = styled(FlexRow)``;
+
+const FilterOptionWrapper = styled.div`
+  width: 200px;
+  margin: 5px 0px 15px 15px;
+`;
+
 
 export default ProceduresTable;

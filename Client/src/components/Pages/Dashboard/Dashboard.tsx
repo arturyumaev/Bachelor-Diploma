@@ -31,8 +31,9 @@ const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 const logoutEntity: string = 'logout';
 
+const defaultTab = 'procedures';
+
 const Dashboard = (props: any) => {
-  const defaultTab = 'appointments';
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>(defaultTab);
   const globalContext = useContext(GlobalContext);
