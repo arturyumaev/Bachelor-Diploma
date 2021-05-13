@@ -16,6 +16,7 @@ import {
   EnvironmentOutlined,
   ApartmentOutlined,
   ReconciliationOutlined,
+  ForkOutlined,
 } from '@ant-design/icons';
 import UserProfile from '../../UserProfile/UserProfile';
 import Analytics from '../../Analytics';
@@ -26,6 +27,7 @@ import Doctors from '../../Doctor/Doctors';
 import Locations from '../../Locations/Locations';
 import Rooms from '../../Rooms/Rooms';
 import Procedures from '../../Procedures/Procedures';
+import Departments from '../../Departments/Departments';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -63,6 +65,7 @@ const Dashboard = (props: any) => {
     doctors: <Doctors />,
     locations: <Locations />,
     rooms: <Rooms />,
+    departments: <Departments />
   };
  
   return getSession()
@@ -102,8 +105,13 @@ const Dashboard = (props: any) => {
                 </Menu.Item>
               }
               {(accessControl === 'Admin' || accessControl === 'Doctor') &&
-                <Menu.Item key="rooms" icon={<ApartmentOutlined />} onClick={() => setActiveTab('rooms')}>
+                <Menu.Item key="rooms" icon={<ForkOutlined />} onClick={() => setActiveTab('rooms')}>
                   Rooms
+                </Menu.Item>
+              }
+              {(accessControl === 'Admin' || accessControl === 'Doctor') &&
+                <Menu.Item key="departments" icon={<ApartmentOutlined />} onClick={() => setActiveTab('departments')}>
+                  Departments
                 </Menu.Item>
               }
             </Menu>

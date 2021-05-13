@@ -27,9 +27,11 @@ create table if not exists "Location" (
 );
 
 create table if not exists "Doctor" (
-    id serial unique,
+    id serial unique ,
     "locationId" int not null ,
-    "departmentId" int not null,
+    "departmentId" int not null ,
+    "workExperience" int not null ,
+    "academicDegree" varchar not null ,
 
     primary key (id),
 
@@ -112,6 +114,8 @@ create table if not exists "AppointmentProcedure" (
     price int not null,
     notes text not null,
     "roomId" int not null,
+    "departmentId" int not null,
+
 
     primary key (id),
 
@@ -121,7 +125,11 @@ create table if not exists "AppointmentProcedure" (
 
     constraint "fk_roomId"
         foreign key ("roomId")
-        references "Room"(id)
+        references "Room"(id),
+
+    constraint "fk_departmentId"
+        foreign key ("departmentId")
+        references "Department"(id)
 );
 
 create table if not exists "Department" (
