@@ -29,12 +29,17 @@ create table if not exists "Location" (
 create table if not exists "Doctor" (
     id serial unique,
     "locationId" int not null ,
+    "departmentId" int not null,
 
     primary key (id),
 
     constraint fk_locationId
         foreign key ("locationId")
-        references "Location"(id)
+        references "Location"(id),
+
+    constraint fk_departmentId
+        foreign key ("departmentId")
+        references "Department"(id)
 ) inherits ("User");
 
 create table if not exists "Patient" (
@@ -117,6 +122,11 @@ create table if not exists "AppointmentProcedure" (
     constraint "fk_roomId"
         foreign key ("roomId")
         references "Room"(id)
+);
+
+create table if not exists "Department" (
+    id serial unique ,
+    name varchar not null
 );
 
 create table if not exists  "Admin" (

@@ -13,6 +13,7 @@ const user = require('./User/user');
 const location = require('./Location/location');
 const room = require('./Room/room');
 const procedure = require('./Procedure/procedure');
+const department = require('./Department/department');
 
 app.use(cors(corsConfig));
 app.use(cookieParser());
@@ -22,6 +23,7 @@ app.use('/user', user);
 app.use('/location', location);
 app.use('/room', room);
 app.use('/procedure', procedure);
+app.use('/department', department);
 
 app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}`)
