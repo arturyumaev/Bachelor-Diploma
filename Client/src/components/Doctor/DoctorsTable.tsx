@@ -43,12 +43,9 @@ const DoctorsTable: React.FC<IComponentProps> = (props) => {
       onOk() {
         fetchApi(`user/doctor/${record.id}`, HTTPMethod.DELETE)
           .then(res => res.json())
-          .then(data => console.log(data))
           .then(() => loadDoctors());
       },
-      onCancel() {
-        console.log('Cancel');
-      },
+      onCancel() {},
     });
   };
 
@@ -69,7 +66,6 @@ const DoctorsTable: React.FC<IComponentProps> = (props) => {
       dataIndex: 'birthDate',
       key: 'birthDate',
       render: (text: any, record: any) => {
-        console.log({ text, record });
         return (
           <DatePickerInputWrapper>
             <DatePicker defaultValue={moment(text)} disabled />

@@ -37,12 +37,9 @@ const LocationsTable: React.FC<IComponentProps> = (props) => {
       onOk() {
         fetchApi(`location/${record.id}`, HTTPMethod.DELETE)
           .then(res => res.json())
-          .then(data => console.log(data))
           .then(() => loadLocations());
       },
-      onCancel() {
-        console.log('Cancel');
-      },
+      onCancel() {},
     });
   };
 

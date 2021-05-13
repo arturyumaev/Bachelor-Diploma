@@ -25,6 +25,7 @@ import Patients from '../../Patients/Patients';
 import Doctors from '../../Doctor/Doctors';
 import Locations from '../../Locations/Locations';
 import Rooms from '../../Rooms/Rooms';
+import Procedures from '../../Procedures/Procedures';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -56,7 +57,7 @@ const Dashboard = (props: any) => {
     dashboard: <Analytics />,
     profile: <UserProfile />,
     appointments: <>appointments</>,
-    procedures: <>Procedures data</>,
+    procedures: <Procedures />,
     patients: <Patients />,
     doctors: <Doctors />,
     locations: <Locations />,

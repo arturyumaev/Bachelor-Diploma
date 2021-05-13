@@ -42,14 +42,9 @@ const RoomsTable: React.FC<IComponentProps> = (props) => {
       onOk() {
         fetchApi(`room/${record.id}`, HTTPMethod.DELETE)
           .then(res => res.json())
-          .then(data => console.log(data))
           .then(() => loadRooms());
-      
-        console.log(record.id);
       },
-      onCancel() {
-        console.log('Cancel');
-      },
+      onCancel() {},
     });
   };
 
@@ -93,13 +88,6 @@ const RoomsTable: React.FC<IComponentProps> = (props) => {
 
         return (
           <ActionButtonsContainer>
-            <ActionIconLayout
-              onClick={() => {}}
-            >
-              <EyeOutlined
-                style={iconStyles}
-              />
-            </ActionIconLayout>
             <ActionIconLayout onClick={() => showConfirm(text, record)}>
               <CloseSquareTwoTone
                 twoToneColor="#eb2f96"

@@ -37,14 +37,9 @@ const PatientsTable: React.FC<IComponentProps> = (props) => {
       onOk() {
         fetchApi(`user/patient/${record.id}`, HTTPMethod.DELETE)
           .then(res => res.json())
-          .then(data => console.log(data))
           .then(() => loadPatients());
-      
-        console.log(record.id);
       },
-      onCancel() {
-        console.log('Cancel');
-      },
+      onCancel() {},
     });
   };
 

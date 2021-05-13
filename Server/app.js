@@ -12,6 +12,7 @@ const logout = require('./Auth/logout');
 const user = require('./User/user');
 const location = require('./Location/location');
 const room = require('./Room/room');
+const procedure = require('./Procedure/procedure');
 
 app.use(cors(corsConfig));
 app.use(cookieParser());
@@ -20,6 +21,7 @@ app.use('/logout', logout);
 app.use('/user', user);
 app.use('/location', location);
 app.use('/room', room);
+app.use('/procedure', procedure);
 
 app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}`)
