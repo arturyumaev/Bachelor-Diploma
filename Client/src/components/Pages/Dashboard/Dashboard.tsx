@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { Button } from 'antd';
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import { fetchApi, HTTPMethod } from '../../../api/Api';
 import getSession from '../../../utils';
@@ -28,12 +28,12 @@ import Locations from '../../Locations/Locations';
 import Rooms from '../../Rooms/Rooms';
 import Procedures from '../../Procedures/Procedures';
 import Departments from '../../Departments/Departments';
+import AppointmentCalendar from '../../AppointmentCalendar/AppointmentCalendar';
 
 const { Header, Content, Footer, Sider } = Layout;
-const { SubMenu } = Menu;
 const logoutEntity: string = 'logout';
 
-const defaultTab = 'procedures';
+const defaultTab = 'calendar';
 
 const Dashboard = (props: any) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
@@ -60,6 +60,7 @@ const Dashboard = (props: any) => {
     dashboard: <Analytics />,
     profile: <UserProfile />,
     appointments: <>appointments</>,
+    calendar: <AppointmentCalendar />,
     procedures: <Procedures />,
     patients: <Patients />,
     doctors: <Doctors />,
@@ -86,6 +87,11 @@ const Dashboard = (props: any) => {
               <Menu.Item key="appointments" icon={<CalendarOutlined />} onClick={() => setActiveTab('appointments')}>
                 Appointments
               </Menu.Item>
+              {accessControl === 'Admin' &&
+                <Menu.Item key="calendar" icon={<ReconciliationOutlined />} onClick={() => setActiveTab('calendar')}>
+                  Calendar
+                </Menu.Item>
+              }
               <Menu.Item key="procedures" icon={<ReconciliationOutlined />} onClick={() => setActiveTab('procedures')}>
                 Procedures
               </Menu.Item>
@@ -135,7 +141,6 @@ const Dashboard = (props: any) => {
                 {mapTabToComponents[activeTab]}
               </ContentWrapper>
             </Content>
-            <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
           </Layout>
         </Layout>
       </div>
