@@ -23,6 +23,7 @@ const AppointmentCalendar = () => {
 
   const [selectedDepartmentId, setSelectedDepartmentId] = useState<number | undefined>(undefined);
   const [selectedDoctortId, setSelectedDoctorId] = useState<number | undefined>(undefined);
+  const [selectedProcedureId, setSelectedProcedureId] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     if (!doctorsRecieved) {
@@ -79,7 +80,10 @@ const AppointmentCalendar = () => {
             optionFilterProp="children"
             onChange={(value: number, option: any) => {
               setSelectedDoctorId(value);
-              setSelectedDepartmentId(doctors.filter(d => d.id == value)[0].departmentId);
+              setSelectedProcedureId(undefined);
+              if (value) {
+                setSelectedDepartmentId(doctors.filter(d => d.id == value)[0].departmentId);
+              }
             }}
             filterOption={(input, option: any) =>
               option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -91,9 +95,31 @@ const AppointmentCalendar = () => {
               ).map(d => <Option key={d.id} value={d.id}>{`${d.firstName} ${d.lastName}`}</Option>)}
           </Select>
         </FilterOptionWrapper>
+        <FilterOptionWrapper width={350}>
+          <Select
+            disabled={!selectedDoctortId}
+            value={selectedProcedureId}
+            showSearch
+            allowClear
+            style={{ width: '100%' }}
+            placeholder="Select a procedure"
+            optionFilterProp="children"
+            onChange={(value: number, option: any) => {
+              setSelectedProcedureId(value);
+            }}
+            filterOption={(input, option: any) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {(selectedDoctortId
+                ? procedures.filter(p => p.doctorId == selectedDoctortId)
+                : procedures
+              ).map(p => <Option key={p.id} value={p.id}>{p.name}</Option>)}
+          </Select>
+        </FilterOptionWrapper>
       </FiltersContainer>
       <Calendar
-        selectable
+        selectable={!!selectedProcedureId}
         culture="en-GB"
         defaultView={'week'}
         localizer={localizer}
@@ -120,9 +146,9 @@ const FiltersContainer = styled.div`
   padding: 0px 8px;
 `;
 
-const FilterOptionWrapper = styled.div`
-  width: 260px;
-  margin: 5px 0px 15px 0px;
+const FilterOptionWrapper = styled.div<{ width?: number }>`
+  width: ${({ width }) => width ?? 260}px;
+  margin: 5px 10px 15px 0px;
 `;
 
 export default AppointmentCalendar;
