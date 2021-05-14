@@ -193,7 +193,7 @@ const ProceduresTable: React.FC<IComponentProps> = (props) => {
   return (
     <Container>
       <FiltersContainer>
-        <FilterOptionWrapper>
+        <FilterOptionWrapper size={300}>
           <Select
             showSearch
             allowClear
@@ -272,8 +272,8 @@ const ActionIconLayout = styled.div`
 
 const FiltersContainer = styled(FlexRow)``;
 
-const FilterOptionWrapper = styled.div`
-  width: 200px;
+const FilterOptionWrapper = styled.div<{ size?: number }>`
+  width: ${({ size }) => size ?? 200}px;
   margin: 5px 0px 15px 15px;
 `;
 
