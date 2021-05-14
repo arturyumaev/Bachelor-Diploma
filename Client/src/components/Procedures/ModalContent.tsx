@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Form } from 'antd';
-import moment from 'moment';
 import _ from 'lodash';
 import { Select, Input, Button, DatePicker, Spin } from 'antd';
 import styled from 'styled-components';
@@ -8,26 +7,30 @@ import Location from '../../interfaces/Location';
 import Doctor from '../../interfaces/Doctor';
 import { fetchApi, HTTPMethod } from '../../api/Api';
 import { Room } from '../../interfaces/Room';
+import { Department } from '../../interfaces/Department';
 
 const { Option } = Select;
 
 interface IComponentProps {
-  onSubmit: (data: object) => void;
+  onSubmit: (data: object) => Promise<any>;
   onCancel: () => void;
   confirmLoading: boolean;
 
   doctors: Doctor[];
   locations: Location[];
+  departments: Department[];
 }
 
 const tempRoomInitial = {
   name: undefined,
-  doctorId: undefined,
-  locationId: undefined,
-  roomId: undefined,
   duration: undefined,
   price: undefined,
   notes: '',
+
+  roomId: undefined,
+  departmentId: undefined,
+  locationId: undefined,
+  doctorId: undefined,
 }
 
 export const ModalContent: React.FC<IComponentProps> = (props) => {
@@ -37,6 +40,7 @@ export const ModalContent: React.FC<IComponentProps> = (props) => {
     confirmLoading,
     doctors,
     locations,
+    departments,
   } = props;
   const [form] = Form.useForm();
   const [locationSelected, setLocationSelected] = useState<boolean>(false);
@@ -44,6 +48,10 @@ export const ModalContent: React.FC<IComponentProps> = (props) => {
   
   const [rooms, setRooms] = useState<Room[]>([]);
   const [roomsFetched, setRoomsFetched] = useState<boolean>(false);
+
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState<number | undefined>(undefined);
+
+  console.log('selectedDepartmentId', selectedDepartmentId);
 
   useEffect(() => {
     if (locationSelected && !roomsFetched) {
@@ -56,8 +64,9 @@ export const ModalContent: React.FC<IComponentProps> = (props) => {
 
   const handleFinish = () => {
     const dataToSubmit = form.getFieldsValue();
-    onSubmit(dataToSubmit);
-    form.resetFields();
+    console.log(dataToSubmit);
+    onSubmit(dataToSubmit).then(() => form.resetFields());
+    // ;
   }
 
   const handleCancel = () => {
@@ -73,28 +82,57 @@ export const ModalContent: React.FC<IComponentProps> = (props) => {
         initialValues={tempRoomInitial}
         onFinish={() => handleFinish()}
       >
-        <Form.Item name="name" label="Name" rules={[{ required: true }]} key="name">
-          <Input placeholder="Input procedure name" />
-        </Form.Item>
-        
+        <FieldWrapper size="full">
+          <Form.Item name="name" label="Name" rules={[{ required: true }]} key="name">
+            <Input placeholder="Input procedure name" />
+          </Form.Item>
+        </FieldWrapper>
+        <Wrapper>
+          <FieldWrapper size="full">
+            <Form.Item name="departmentId" label="Department" rules={[{ required: true }]} key="departmentId">
+              <Select
+                allowClear
+                showSearch
+                placeholder="Select department"
+                disabled={!!form.getFieldValue('doctorId')}
+                filterOption={(input: any, option: any) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+                onChange={(value: number, option) => {
+                  setSelectedDepartmentId(value);
+                }}
+              >
+                {departments.map(d => <Option value={d.id}>{d.name}</Option>)}
+              </Select>
+            </Form.Item>
+          </FieldWrapper>
+        </Wrapper>
         <Wrapper>
           <FieldWrapper>
             <Form.Item name="doctorId" label="Doctor" rules={[{ required: true }]} key="doctorId">
               <Select
                 showSearch
+                allowClear
                 placeholder="Select doctor"
                 filterOption={(input: any, option: any) =>
                   option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
-                onChange={(value, option) => {
+                onChange={(value: number, option) => {
                   const currentDoctor = _.find(doctors, d => d.id == value);
                   const doctorLocation = _.find(locations, l => l.id == currentDoctor?.locationId);
                   form.setFieldsValue({ locationId: doctorLocation?.id });
+                  form.setFieldsValue({ departmentId: currentDoctor?.departmentId });
+                  setSelectedDepartmentId(value);
                   setLocationSelected(true);
                   setLocationUpdated(!locationUpdated);
                 }}
               >
-                {doctors.map(d => <Option value={d.id}>{`${d.firstName} ${d.lastName}`}</Option>)}
+                {
+                  (!!selectedDepartmentId
+                    ? doctors.filter(d => d.departmentId == form.getFieldValue('departmentId'))
+                    : doctors
+                  ).map(d => <Option value={d.id}>{`${d.firstName} ${d.lastName}`}</Option>)
+                }
               </Select>
             </Form.Item>
           </FieldWrapper>
@@ -131,22 +169,26 @@ export const ModalContent: React.FC<IComponentProps> = (props) => {
             </Form.Item>
           </FieldWrapper>
         </Wrapper>
-        <Form.Item name="notes" label="Notes" required={false} key="notes">
-          <Input.TextArea />
-        </Form.Item>
-        <Form.Item>
-          <ButtonWrapper>
-            <Button disabled={confirmLoading} type="primary" htmlType="submit">
-              {confirmLoading
-                ? <><Spin />&nbsp;Loading...</>
-                : <>Create</>
-              }
-            </Button>
-            <Button style={{ marginRight: '8px' }} onClick={handleCancel}>
-              Cancel
-            </Button>
-          </ButtonWrapper>
-        </Form.Item>
+        <FieldWrapper size="full">
+          <Form.Item name="notes" label="Notes" required={false} key="notes">
+            <Input.TextArea />
+          </Form.Item>
+        </FieldWrapper>
+        <FieldWrapper size="full">
+          <Form.Item>
+            <ButtonWrapper>
+              <Button disabled={confirmLoading} type="primary" htmlType="submit">
+                {confirmLoading
+                  ? <><Spin />&nbsp;Loading...</>
+                  : <>Create</>
+                }
+              </Button>
+              <Button style={{ marginRight: '8px' }} onClick={handleCancel}>
+                Cancel
+              </Button>
+            </ButtonWrapper>
+          </Form.Item>
+        </FieldWrapper>
       </Form>
     </Container>
   );
@@ -156,7 +198,9 @@ const Flex = styled.div`
   display: flex;
 `;
 
-const Container = styled.div``;
+const Container = styled.div`
+  margin-left: 20px;
+`;
 
 const Wrapper = styled(Flex)`
   flex-wrap: wrap;
@@ -166,7 +210,7 @@ const ButtonWrapper = styled(Flex)`
   flex-direction: row-reverse;
 `;
 
-const FieldWrapper = styled.div`
-  width: 280px;
+const FieldWrapper = styled.div<{ size?: string }>`
+  width: ${({ size }) => size == 'full' ? 580 : 280}px;
   margin-right: 20px;
 `;

@@ -33,7 +33,7 @@ const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 const logoutEntity: string = 'logout';
 
-const defaultTab = 'doctors';
+const defaultTab = 'procedures';
 
 const Dashboard = (props: any) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);

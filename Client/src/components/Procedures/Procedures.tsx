@@ -13,6 +13,7 @@ import Location from '../../interfaces/Location';
 import Doctor from '../../interfaces/Doctor';
 import ProceduresTable from './ProceduresTable';
 import AppointmentProcedure from '../../interfaces/Appointment/AppointmentProcedure';
+import { Department } from '../../interfaces/Department';
 
 const { Title, Text } = Typography;
 
@@ -40,6 +41,9 @@ const Procedures: React.FC<StateProps & OwnProps> = (props) => {
   const [procedures, setProcedures] = useState<Array<AppointmentProcedure>>([]);
   const [proceduresRecieved, setProceduresRecieved] = useState<boolean>(false);
 
+  const [departments, setDepartments] = useState<Array<Department>>([]);
+  const [departmentsRecieved, setDepartmentsRecieved] = useState<boolean>(false);
+
   useEffect(() => {
     if (!locationsRecieved) {
       fetchApi('location/-1', HTTPMethod.GET)
@@ -61,6 +65,13 @@ const Procedures: React.FC<StateProps & OwnProps> = (props) => {
         .then(data => setRooms(data.rooms))
         .then(() => setRoomsRecieved(true));
     }
+
+    if (!departmentsRecieved) {
+      fetchApi('department/-1', HTTPMethod.GET)
+        .then(result => result.json())
+        .then(data => setDepartments(data.departments))
+        .then(() => setDepartmentsRecieved(true));
+    }
   });
 
   useEffect(() => {
@@ -74,15 +85,18 @@ const Procedures: React.FC<StateProps & OwnProps> = (props) => {
 
   const handleOk = (data: object) => {
     setConfirmLoading(true);
-    setTimeout(() => {
-      fetchApi('procedure', HTTPMethod.POST, data)
-        .then(response => response.json)
-        .then(() => setConfirmLoading(false))
-        .then(() => setIsModalVisible(false))
-        .then(() => setProceduresRecieved(false))
-        .then(() => notification.success({ message: 'Procedure has been successfully created' }))
-        .then(() => setDataUpdated(!dataUpdated));
-    }, 2000);
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        fetchApi('procedure', HTTPMethod.POST, data)
+          .then(response => response.json)
+          .then(() => setConfirmLoading(false))
+          .then(() => setIsModalVisible(false))
+          .then(() => setProceduresRecieved(false))
+          .then(() => notification.success({ message: 'Procedure has been successfully created' }))
+          .then(() => setDataUpdated(!dataUpdated))
+          .then(() => resolve(null));
+      }, 2000);
+    })
   };
 
   const handleCancel = () => {
@@ -111,6 +125,7 @@ const Procedures: React.FC<StateProps & OwnProps> = (props) => {
             confirmLoading={confirmLoading}
           >
             <ModalContent
+              departments={departments}
               doctors={doctors}
               locations={locations}
               onSubmit={handleOk}
@@ -122,6 +137,7 @@ const Procedures: React.FC<StateProps & OwnProps> = (props) => {
       }
       <ProceduresLayout>
         <ProceduresTable
+          departments={departments}
           locations={locations}
           rooms={rooms}
           doctors={doctors}

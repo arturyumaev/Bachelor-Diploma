@@ -11,7 +11,7 @@ import { Room } from '../../interfaces/Room';
 import Location from '../../interfaces/Location';
 import Doctor from '../../interfaces/Doctor';
 import AppointmentProcedure from '../../interfaces/Appointment/AppointmentProcedure';
-import { filter } from 'lodash';
+import { Department } from '../../interfaces/Department';
 
 const { Option } = Select;
 const { confirm } = Modal;
@@ -22,6 +22,7 @@ type ProcedureColumnDescription = {
   doctorId: number;
   locationId: number;
   roomId: number;
+  departmentId: number;
   duration: number;
   price: number;
   notes: string;
@@ -29,6 +30,7 @@ type ProcedureColumnDescription = {
 
 interface IComponentProps {
   procedures: AppointmentProcedure[];
+  departments: Department[];
   locations: Location[];
   rooms: Room[];
   doctors: Doctor[];
@@ -39,12 +41,14 @@ interface IFilterOptions {
   doctorId?: number;
   locationId?: number;
   roomId?: number;
+  departmentId?: number;
 }
 
 const defaultFilterOptions: IFilterOptions = {
   doctorId: undefined,
   locationId: undefined,
   roomId: undefined,
+  departmentId: undefined,
 }
 
 const filterOnOptions = (
@@ -63,13 +67,17 @@ const filterOnOptions = (
     .filter(p => filterOptions.roomId
       ? p.roomId == filterOptions.roomId
       : true
+    )
+    .filter(p => filterOptions.departmentId
+      ? p.departmentId == filterOptions.departmentId
+      : true
     );
 
   return filteredProcedures;
 };
 
 const ProceduresTable: React.FC<IComponentProps> = (props) => {
-  const { procedures, locations, rooms, doctors, loadProcedures } = props;
+  const { procedures, departments, locations, rooms, doctors, loadProcedures } = props;
 
   const [dataToRender, setDataToRender] = useState<AppointmentProcedure[]>(procedures);
   const [filterOptions, setFilterOptions] = useState<IFilterOptions>(defaultFilterOptions);
@@ -103,6 +111,19 @@ const ProceduresTable: React.FC<IComponentProps> = (props) => {
       dataIndex: 'name',
       key: 'name',
       render: (text: any) => <a>{text}</a>,
+    },
+    {
+      title: 'Departments',
+      dataIndex: 'departmentId',
+      key: 'departmentId',
+      render: (text: number, record: any) => {
+        if (departments.length) {
+          const department = departments.filter(d => d.id == text)[0];
+          return department.name;
+        }
+
+        return <LoadingOutlined />;
+      }
     },
     {
       title: 'Doctor',
@@ -184,6 +205,7 @@ const ProceduresTable: React.FC<IComponentProps> = (props) => {
       name: p.name,
       doctorId: p.doctorId,
       locationId: p.locationId,
+      departmentId: p.departmentId,
       roomId: p.roomId,
       duration: p.duration,
       price: p.price,
@@ -193,7 +215,22 @@ const ProceduresTable: React.FC<IComponentProps> = (props) => {
   return (
     <Container>
       <FiltersContainer>
-        <FilterOptionWrapper size={300}>
+        <FilterOptionWrapper>
+          <Select
+            showSearch
+            allowClear
+            style={{ width: '100%' }}
+            placeholder="Select a department"
+            optionFilterProp="children"
+            onChange={(value: number, option: any) => setFilterOptions({ ...filterOptions, departmentId: value })}
+            filterOption={(input, option: any) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {departments.map(d => <Option key={d.id} value={d.id}>{d.name}</Option>)}
+          </Select>
+        </FilterOptionWrapper>
+        <FilterOptionWrapper>
           <Select
             showSearch
             allowClear
@@ -263,18 +300,19 @@ const Container = styled.div``;
 const ActionButtonsContainer = styled(FlexRow)``;
 
 const ActionIconLayout = styled.div`
-  margin-right: 8px;
-
   &:hover {
     cursor: pointer;
   } 
 `;
 
-const FiltersContainer = styled(FlexRow)``;
+const FiltersContainer = styled(FlexRow)`
+  justify-content: space-between;
+  padding: 0px 8px;
+`;
 
 const FilterOptionWrapper = styled.div<{ size?: number }>`
-  width: ${({ size }) => size ?? 200}px;
-  margin: 5px 0px 15px 15px;
+  width: 260px;
+  margin: 5px 0px 15px 0px;
 `;
 
 
