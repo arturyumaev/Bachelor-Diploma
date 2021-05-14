@@ -30,9 +30,9 @@ import Procedures from '../../Procedures/Procedures';
 import Departments from '../../Departments/Departments';
 import AppointmentCalendar from '../../AppointmentCalendar/AppointmentCalendar';
 
-const { Header, Content, Footer, Sider } = Layout;
-const logoutEntity: string = 'logout';
+const { Header, Content, Sider } = Layout;
 
+const logoutEntity: string = 'logout';
 const defaultTab = 'calendar';
 
 const Dashboard = (props: any) => {

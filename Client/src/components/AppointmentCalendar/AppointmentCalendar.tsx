@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, momentLocalizer, Views } from 'react-big-calendar'
+import { Calendar, momentLocalizer } from 'react-big-calendar'
+import { Select } from 'antd';
 import moment from 'moment';
 import styled from 'styled-components';
 import Doctor from '../../interfaces/Doctor';
@@ -7,6 +8,7 @@ import AppointmentProcedure from '../../interfaces/Appointment/AppointmentProced
 import { Department } from '../../interfaces/Department';
 import { fetchApi, HTTPMethod } from '../../api/Api';
 
+const { Option } = Select;
 const localizer = momentLocalizer(moment);
 
 const AppointmentCalendar = () => {
@@ -18,6 +20,9 @@ const AppointmentCalendar = () => {
 
   const [departments, setDepartments] = useState<Array<Department>>([]);
   const [departmentsRecieved, setDepartmentsRecieved] = useState<boolean>(false);
+
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState<number | undefined>(undefined);
+  const [selectedDoctortId, setSelectedDoctorId] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     if (!doctorsRecieved) {
@@ -45,7 +50,47 @@ const AppointmentCalendar = () => {
   return (
     <Container>
       <FiltersContainer>
-        Filters
+        <FilterOptionWrapper>
+          <Select
+            value={selectedDepartmentId}
+            showSearch
+            allowClear
+            style={{ width: '100%' }}
+            placeholder="Select a department"
+            optionFilterProp="children"
+            onChange={(value: number, option: any) => {
+              setSelectedDepartmentId(value);
+              setSelectedDoctorId(undefined);
+            }}
+            filterOption={(input, option: any) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {departments.map(d => <Option key={d.id} value={d.id}>{d.name}</Option>)}
+          </Select>
+        </FilterOptionWrapper>
+        <FilterOptionWrapper>
+          <Select
+            value={selectedDoctortId}
+            showSearch
+            allowClear
+            style={{ width: '100%' }}
+            placeholder="Select a doctor"
+            optionFilterProp="children"
+            onChange={(value: number, option: any) => {
+              setSelectedDoctorId(value);
+              setSelectedDepartmentId(doctors.filter(d => d.id == value)[0].departmentId);
+            }}
+            filterOption={(input, option: any) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {(selectedDepartmentId
+                ? doctors.filter(d => d.departmentId == selectedDepartmentId)
+                : doctors
+              ).map(d => <Option key={d.id} value={d.id}>{`${d.firstName} ${d.lastName}`}</Option>)}
+          </Select>
+        </FilterOptionWrapper>
       </FiltersContainer>
       <Calendar
         selectable
@@ -71,8 +116,13 @@ const Container = styled.div`
 const FiltersContainer = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: left;
   padding: 0px 8px;
+`;
+
+const FilterOptionWrapper = styled.div`
+  width: 260px;
+  margin: 5px 0px 15px 0px;
 `;
 
 export default AppointmentCalendar;

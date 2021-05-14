@@ -111,7 +111,7 @@ const Procedures: React.FC<StateProps & OwnProps> = (props) => {
             <ReconciliationOutlined />
             New procedure
           </Button>
-          <Title level={3} style={{ marginLeft: '15px' }}>
+          <Title level={3} style={{ marginLeft: '10px' }}>
             <Text type="secondary">
               Filters
             </Text>
