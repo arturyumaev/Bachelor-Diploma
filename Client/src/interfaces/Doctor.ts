@@ -1,10 +1,9 @@
-import AppointmentProcedure from "./Appointment/AppointmentProcedure";
 import User from "./User";
 
 export default interface Doctor extends User {
   locationId: number;
-  location: Location;
-
-  appointmentProcedures: Array<AppointmentProcedure>;
+  departmentId: number;
+  workExperience: number;
+  academicDegree: string;
+  notes: string;
 }
-

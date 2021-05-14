@@ -1,39 +1,43 @@
 import React from 'react';
 import styled from 'styled-components';
 import Loader from "react-loader-spinner";
-import moment from 'moment';
-import { Table, Modal, DatePicker } from 'antd';
+import { Table, Modal, Tooltip } from 'antd';
 import {
   CloseSquareTwoTone,
-  EyeOutlined,
   ExclamationCircleOutlined,
   LoadingOutlined,
+  InfoCircleTwoTone,
 } from '@ant-design/icons';
 import Doctor from '../../interfaces/Doctor';
 import { fetchApi, HTTPMethod } from '../../api/Api';
 import Location from '../../interfaces/Location';
+import { Department } from '../../interfaces/Department';
 
 const { confirm } = Modal;
 
 type DoctorColumnDescription = {
   id: number;
   name: string;
-  birthDate: string;
   phone: string;
   email: string;
   locationId: number;
+  departmentId: number;
+  workExperience: number;
+  academicDegree: string;
+  notes: string;
 }
 
 interface IComponentProps {
   locations: Location[];
   locationsRecieved: boolean;
-  doctors: Array<Doctor>;
+  doctors: Doctor[];
   doctorsLoading: boolean;
+  departments: Department[];
   loadDoctors: () => void;
 }
 
 const DoctorsTable: React.FC<IComponentProps> = (props) => {
-  const { locations, locationsRecieved, doctors, doctorsLoading, loadDoctors } = props;
+  const { locations, locationsRecieved, doctors, doctorsLoading, departments, loadDoctors } = props;
 
   const showConfirm = (text: DoctorColumnDescription, record: DoctorColumnDescription) => {
     confirm({
@@ -62,18 +66,6 @@ const DoctorsTable: React.FC<IComponentProps> = (props) => {
       render: (text: any) => <a>{text}</a>,
     },
     {
-      title: 'Birth date',
-      dataIndex: 'birthDate',
-      key: 'birthDate',
-      render: (text: any, record: any) => {
-        return (
-          <DatePickerInputWrapper>
-            <DatePicker defaultValue={moment(text)} disabled />
-          </DatePickerInputWrapper>
-        );
-      },
-    },
-    {
       title: 'Phone',
       dataIndex: 'phone',
       key: 'phone',
@@ -82,6 +74,40 @@ const DoctorsTable: React.FC<IComponentProps> = (props) => {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
+    },
+    {
+      title: 'Department',
+      dataIndex: 'departmentId',
+      key: 'departmentId',
+      render: (text: any, record: any) => {
+        const title = departments
+          ? departments.filter(d => d.id == text)[0].name
+          : '-';
+
+        return title;
+      },
+    },
+    {
+      title: 'Work experience',
+      dataIndex: 'workExperience',
+      key: 'workExperience',
+    },
+    {
+      title: 'Academic Degree',
+      dataIndex: 'academicDegree',
+      key: 'academicDegree',
+    },
+    {
+      title: 'Notes',
+      dataIndex: 'notes',
+      key: 'notes',
+      render: (text: any, record: any) => {
+        return (
+          <Tooltip title={text} color="blue">
+            <InfoCircleTwoTone style={{ fontSize: '20px' }} className="doctor-info-icon" />
+          </Tooltip>
+        );
+      },
     },
     {
       title: 'Location',
@@ -101,13 +127,6 @@ const DoctorsTable: React.FC<IComponentProps> = (props) => {
 
         return (
           <ActionButtonsContainer>
-            <ActionIconLayout
-              onClick={() => {}}
-            >
-              <EyeOutlined
-                style={iconStyles}
-              />
-            </ActionIconLayout>
             <ActionIconLayout onClick={() => showConfirm(text, record)}>
               <CloseSquareTwoTone
                 twoToneColor="#eb2f96"
@@ -123,14 +142,17 @@ const DoctorsTable: React.FC<IComponentProps> = (props) => {
   const doctorsToRender: DoctorColumnDescription[] = doctors.map(d => ({
     id: d.id,
     name: `${d.firstName} ${d.lastName}`,
-    birthDate: d.birthDate,
     phone: d.phone,
     email: d.email,
     locationId: d.locationId,
+    departmentId: d.departmentId,
+    workExperience: d.workExperience,
+    academicDegree: d.academicDegree,
+    notes: d.notes,
   }));
 
   return (
-    <div>
+    <Container>
       {doctorsLoading
       ? (
         <LoadingScreen>
@@ -149,13 +171,21 @@ const DoctorsTable: React.FC<IComponentProps> = (props) => {
           dataSource={doctorsToRender}
         />
       )}
-    </div>
+    </Container>
   );
 };
 
 const FlexRow = styled.div`
   display: flex;
   flex-direction: row;
+`;
+
+const Container = styled.div`
+  .doctor-info-icon {
+    &:hover {
+      cursor: pointer;
+    }
+  }
 `;
 
 const LoadingScreen = styled(FlexRow)`

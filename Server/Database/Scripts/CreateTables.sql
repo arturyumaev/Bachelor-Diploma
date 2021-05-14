@@ -32,6 +32,7 @@ create table if not exists "Doctor" (
     "departmentId" int not null ,
     "workExperience" int not null ,
     "academicDegree" varchar not null ,
+    notes text not null ,
 
     primary key (id),
 
@@ -116,7 +117,6 @@ create table if not exists "AppointmentProcedure" (
     "roomId" int not null,
     "departmentId" int not null,
 
-
     primary key (id),
 
 	constraint "fk_doctorId"
@@ -129,7 +129,11 @@ create table if not exists "AppointmentProcedure" (
 
     constraint "fk_departmentId"
         foreign key ("departmentId")
-        references "Department"(id)
+        references "Department"(id),
+
+    constraint "fk_locationId"
+        foreign key ("locationId")
+        references "Location"(id)
 );
 
 create table if not exists "Department" (

@@ -1,10 +1,12 @@
 import { Form } from 'antd';
 import moment from 'moment';
+import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { Select, Input, Button, DatePicker, Spin } from 'antd';
 import styled from 'styled-components';
 import { fetchApi, HTTPMethod } from '../../api/Api';
 import Location from '../../interfaces/Location';
+import { Department } from '../../interfaces/Department';
 
 interface IFormField {
   label: string;
@@ -33,13 +35,21 @@ const tempDoctorInitial = {
   emergencyContactName: '',
   emergencyContactPhone: '',
   emergencyContactRelation: '',
+  departmentId: undefined,
+  workExperience: undefined,
+  academicDegree: '',
+  notes: '',
 }
 
 export const ModalContent: React.FC<IComponentProps> = (props) => {
   const { onSubmit, onCancel, confirmLoading } = props;
   const [form] = Form.useForm();
-  const [locations, setLocations] = useState<Array<Location>>([]);
+
+  const [locations, setLocations] = useState<Location[]>([]);
   const [locationsRecieved, setLocationsRecieved] = useState<boolean>(false);
+
+  const [departments, setDepartments] = useState<Department[]>([]);
+  const [departmentsRecieved, setDepartmentsRecieved] = useState<boolean>(false);
 
   useEffect(() => {
     if (!locationsRecieved) {
@@ -47,6 +57,13 @@ export const ModalContent: React.FC<IComponentProps> = (props) => {
       .then(result => result.json())
       .then(data => setLocations(data.locations))
       .then(() => setLocationsRecieved(true));
+    }
+
+    if (!departmentsRecieved) {
+      fetchApi('department/-1', HTTPMethod.GET)
+      .then(result => result.json())
+      .then(data => setDepartments(data.departments))
+      .then(() => setDepartmentsRecieved(true));
     }
   });
 
@@ -107,6 +124,18 @@ export const ModalContent: React.FC<IComponentProps> = (props) => {
       )
     },
     {
+      label: 'Work experience',
+      name: 'workExperience',
+      placeholder: 'Input work experience',
+      required: true,
+    },
+    {
+      label: 'Academic degree',
+      name: 'academicDegree',
+      placeholder: 'Input academic degree',
+      required: true,
+    },
+    {
       label: 'Location',
       name: 'locationId',
       placeholder: 'Select location',
@@ -152,6 +181,23 @@ export const ModalContent: React.FC<IComponentProps> = (props) => {
         initialValues={tempDoctorInitial}
         onFinish={() => handleFinish()}
       >
+        <Wrapper>          
+          <FieldWrapper style={{ width: '580px' }}>
+            <Form.Item name="departmentId" label="Department" rules={[{ required: true }]} key="departmentId">
+              <Select
+                showSearch
+                placeholder="Select department"
+                filterOption={(input: any, option: any) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+                onChange={(value, option) => {
+                }}
+              >
+                {departments.map(d => <Option value={d.id}>{d.name}</Option>)}
+              </Select>
+            </Form.Item>
+          </FieldWrapper>
+        </Wrapper>
         <Wrapper>
           {doctorFormFields.map((field: IFormField) => (
             <FieldWrapper key={field.name}>
@@ -165,6 +211,11 @@ export const ModalContent: React.FC<IComponentProps> = (props) => {
             )
           )}
         </Wrapper>
+        <FieldWrapper style={{ width: '580px' }}>
+          <Form.Item name="notes" label="Notes" rules={[{ required: true }]} key="notes">
+            <Input.TextArea />
+          </Form.Item>
+        </FieldWrapper>
         <Form.Item>
           <ButtonWrapper>
             <Button disabled={confirmLoading} type="primary" htmlType="submit">

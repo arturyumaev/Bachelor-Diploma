@@ -10,6 +10,7 @@ import { AppDispatch, RootState } from '../../store/store';
 import DoctorsTable from './DoctorsTable';
 import { ModalContent } from './ModalContent';
 import Location from '../../interfaces/Location';
+import { Department } from '../../interfaces/Department';
 
 type StateProps = {
   userProfile: ICommonUser;
@@ -29,12 +30,22 @@ const Doctors: React.FC<OwnProps & StateProps> = (props) => {
   const [locations, setLocations] = useState<Array<Location>>([]);
   const [locationsRecieved, setLocationsRecieved] = useState<boolean>(false);
 
+  const [departments, setDepartments] = useState<Array<Department>>([]);
+  const [departmentsRecieved, setDepartmentsRecieved] = useState<boolean>(false);
+
   useEffect(() => {
     if (!locationsRecieved) {
       fetchApi('location/-1', HTTPMethod.GET)
         .then(result => result.json())
         .then(data => setLocations(data.locations))
         .then(() => setLocationsRecieved(true));
+    }
+
+    if (!departmentsRecieved) {
+      fetchApi('department/-1', HTTPMethod.GET)
+        .then(result => result.json())
+        .then(data => setDepartments(data.departments))
+        .then(() => setDepartmentsRecieved(true));
     }
   });
 
@@ -90,6 +101,7 @@ const Doctors: React.FC<OwnProps & StateProps> = (props) => {
       }
       <DoctorsLayout>
         <DoctorsTable
+          departments={departments}
           locationsRecieved={locationsRecieved}
           locations={locations}
           doctors={doctors}
