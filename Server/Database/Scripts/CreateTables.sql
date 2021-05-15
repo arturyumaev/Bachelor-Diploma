@@ -67,7 +67,6 @@ create table if not exists "Appointment" (
     "doctorId" int not null,
     "appointmentProcedureId" int not null, /* Ids from doctor's available */
     "roomId" int not null, /* Sets from app proc */
-    "locationId" int not null, /* Sets from doctor */
 
     primary key (id),
 

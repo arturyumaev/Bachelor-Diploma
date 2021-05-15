@@ -1,29 +1,59 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar'
-import { Select } from 'antd';
+import { Select, Tag, Modal } from 'antd';
 import moment from 'moment';
 import styled from 'styled-components';
 import Doctor from '../../interfaces/Doctor';
 import AppointmentProcedure from '../../interfaces/Appointment/AppointmentProcedure';
 import { Department } from '../../interfaces/Department';
 import { fetchApi, HTTPMethod } from '../../api/Api';
+import { AppointmentForm, IAppointmentData } from './AppointmentForm';
+
+interface Event {
+  title: string;
+  start: Date;
+  end: Date;
+  allDay?: boolean;
+  resource?: any;
+}
 
 const { Option } = Select;
 const localizer = momentLocalizer(moment);
 
+const defaultAppointmentData: IAppointmentData = {
+  doctorId: -1,
+  departmentId: -1,
+  procedureId: -1,
+  from: new Date(),
+  to: new Date(),
+}
+
+export const convertMinsToHrsMins = (mins?: number) => {
+  if (mins) {
+    let h: any = Math.floor(mins / 60);
+    let m: any = mins % 60;
+    // h = h < 10 ? '0' + h : h;
+    m = m < 10 ? '0' + m : m;
+    return `${h}h ${m}m`;
+  }
+}
+
 const AppointmentCalendar = () => {
   const [doctors, setDoctors] = useState<Array<Doctor>>([]);
   const [doctorsRecieved, setDoctorsRecieved] = useState<boolean>(false);
-
   const [procedures, setProcedures] = useState<Array<AppointmentProcedure>>([]);
   const [proceduresRecieved, setProceduresRecieved] = useState<boolean>(false);
-
   const [departments, setDepartments] = useState<Array<Department>>([]);
   const [departmentsRecieved, setDepartmentsRecieved] = useState<boolean>(false);
 
   const [selectedDepartmentId, setSelectedDepartmentId] = useState<number | undefined>(undefined);
   const [selectedDoctortId, setSelectedDoctorId] = useState<number | undefined>(undefined);
   const [selectedProcedureId, setSelectedProcedureId] = useState<number | undefined>(undefined);
+
+  const [events, setEvents] = useState<Event[]>([]);
+  const [appointmentData, setAppointmentData] = useState<IAppointmentData>(defaultAppointmentData);
+
+  const [openModal, setOpenModal] = useState<boolean>(false);
 
   useEffect(() => {
     if (!doctorsRecieved) {
@@ -48,6 +78,13 @@ const AppointmentCalendar = () => {
     }
   }, [doctorsRecieved, proceduresRecieved, departmentsRecieved]);
 
+  useEffect(() => {
+    if (selectedProcedureId) {
+      console.log('data updated', appointmentData);
+      setOpenModal(true);
+    }
+  }, [appointmentData]);
+
   return (
     <Container>
       <FiltersContainer>
@@ -62,6 +99,7 @@ const AppointmentCalendar = () => {
             onChange={(value: number, option: any) => {
               setSelectedDepartmentId(value);
               setSelectedDoctorId(undefined);
+              setSelectedProcedureId(undefined);
             }}
             filterOption={(input, option: any) =>
               option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -105,6 +143,7 @@ const AppointmentCalendar = () => {
             placeholder="Select a procedure"
             optionFilterProp="children"
             onChange={(value: number, option: any) => {
+              console.log('setting up', value);
               setSelectedProcedureId(value);
             }}
             filterOption={(input, option: any) =>
@@ -117,20 +156,53 @@ const AppointmentCalendar = () => {
               ).map(p => <Option key={p.id} value={p.id}>{p.name}</Option>)}
           </Select>
         </FilterOptionWrapper>
+        {!!selectedProcedureId &&
+          <FilterOptionWrapper>
+            <Tag color="#87d068">
+              Duration: {convertMinsToHrsMins(procedures.find(p => p.id == selectedProcedureId)?.duration)}
+            </Tag>
+          </FilterOptionWrapper>
+        }
       </FiltersContainer>
       <Calendar
         selectable={!!selectedProcedureId}
         culture="en-GB"
         defaultView={'week'}
         localizer={localizer}
-        events={[]}
+        events={events}
         startAccessor="start"
         endAccessor="end"
         min={new Date(2021, 4, 1, 8, 30)}
         max={new Date(2021, 4, 1, 18, 0)}
 
-        onSelectSlot={(slotInfo) => console.log(slotInfo)}
+        onSelectSlot={(slotInfo) => {
+          const event: Event = { start: new Date(slotInfo.start), end: new Date(slotInfo.end), title: 'test' };
+          setAppointmentData({
+            doctorId: selectedDoctortId ?? -1,
+            procedureId: selectedProcedureId ?? -1,
+            departmentId: selectedDepartmentId ?? -1,
+            from: new Date(slotInfo.start),
+            to: new Date(slotInfo.end),
+          });
+          // setOpenModal(true);
+          // setEvents([...events, event]);
+        }}
       />
+      <Modal
+        title="Basic Modal"
+        width={700}
+        visible={openModal}
+        onOk={() => {}}
+        onCancel={() => setOpenModal(false)}
+        destroyOnClose={true}
+      >
+        <AppointmentForm
+          {...appointmentData}
+          departments={departments}
+          procedures={procedures}
+          doctors={doctors}
+        />
+      </Modal>
     </Container>
   );
 };
