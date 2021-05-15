@@ -5,6 +5,7 @@ import { Select, Form, DatePicker, TimePicker, Input } from 'antd';
 import AppointmentProcedure from '../../interfaces/Appointment/AppointmentProcedure';
 import { Department } from '../../interfaces/Department';
 import Doctor from '../../interfaces/Doctor';
+import { convertMinsToHrsMins } from './AppointmentCalendar';
 
 const { Option } = Select;
 
@@ -122,8 +123,14 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
               </Form.Item>
             </SelectWrapper>
             <SelectWrapper widthPercent={25}>
-              <Form.Item label="From">
-                <Input defaultValue={'asd'} disabled placeholder="Basic usage" />
+              <Form.Item label="Duration">
+                <Input
+                  disabled
+                  defaultValue={
+                    convertMinsToHrsMins(procedures.find(p => p.id == procedureId)?.duration)
+                  } 
+                  placeholder="Basic usage"
+                />
               </Form.Item>
             </SelectWrapper>
           </SelectContainer>
@@ -136,7 +143,7 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
   );
 };
 
-const TEXT_DISABLED_COLOR = '#000000BF'
+const TEXT_DISABLED_COLOR = '#000000B3';
 
 const Container = styled.div`
   .ant-form-item {
@@ -149,6 +156,10 @@ const Container = styled.div`
 
   .ant-select-disabled.ant-select:not(.ant-select-customize-input) .ant-select-selector {
     color: ${TEXT_DISABLED_COLOR};
+  }
+
+  .ant-input[disabled] {
+    color: black;
   }
 `;
 
