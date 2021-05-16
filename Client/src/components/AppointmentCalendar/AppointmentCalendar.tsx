@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar'
-import { Select, Tag, Modal } from 'antd';
+import { Select, Tag, Modal, Button } from 'antd';
 import moment from 'moment';
 import styled from 'styled-components';
 import Doctor from '../../interfaces/Doctor';
@@ -8,6 +8,7 @@ import AppointmentProcedure from '../../interfaces/Appointment/AppointmentProced
 import { Department } from '../../interfaces/Department';
 import { fetchApi, HTTPMethod } from '../../api/Api';
 import { AppointmentForm, IAppointmentData } from './AppointmentForm';
+import Location from '../../interfaces/Location';
 
 interface Event {
   title: string;
@@ -41,10 +42,15 @@ export const convertMinsToHrsMins = (mins?: number) => {
 const AppointmentCalendar = () => {
   const [doctors, setDoctors] = useState<Array<Doctor>>([]);
   const [doctorsRecieved, setDoctorsRecieved] = useState<boolean>(false);
+  
   const [procedures, setProcedures] = useState<Array<AppointmentProcedure>>([]);
   const [proceduresRecieved, setProceduresRecieved] = useState<boolean>(false);
+  
   const [departments, setDepartments] = useState<Array<Department>>([]);
   const [departmentsRecieved, setDepartmentsRecieved] = useState<boolean>(false);
+
+  const [locations, setLocations] = useState<Location[]>([]);
+  const [locationsRecieved, setLocationsRecieved] = useState<boolean>(false);
 
   const [selectedDepartmentId, setSelectedDepartmentId] = useState<number | undefined>(undefined);
   const [selectedDoctortId, setSelectedDoctorId] = useState<number | undefined>(undefined);
@@ -76,14 +82,24 @@ const AppointmentCalendar = () => {
         .then(result => result.json())
         .then(data => setDepartments(data.departments));
     }
-  }, [doctorsRecieved, proceduresRecieved, departmentsRecieved]);
+
+    if (!locationsRecieved) {
+      fetchApi('location/-1', HTTPMethod.GET)
+        .then((result) => { setLocationsRecieved(true); return result; })
+        .then(result => result.json())
+        .then(data => setLocations(data.locations));
+    }
+  }, [doctorsRecieved, proceduresRecieved, departmentsRecieved, locationsRecieved]);
 
   useEffect(() => {
     if (selectedProcedureId) {
-      console.log('data updated', appointmentData);
       setOpenModal(true);
     }
   }, [appointmentData]);
+
+  const handleModalSubmit = (values: any) => {
+    console.log(values);
+  }
 
   return (
     <Container>
@@ -192,15 +208,27 @@ const AppointmentCalendar = () => {
         title="Basic Modal"
         width={700}
         visible={openModal}
-        onOk={() => {}}
+        // onOk={() => handleModalSubmit()}
         onCancel={() => setOpenModal(false)}
         destroyOnClose={true}
+        footer={
+          [
+            <Button form="appointmentForm" onClick={() => setOpenModal(false)}>
+              Cancel
+            </Button>,
+            <Button type="primary" form="appointmentForm" key="submit" htmlType="submit">
+              Submit
+            </Button>
+          ]
+        }
       >
         <AppointmentForm
           {...appointmentData}
           departments={departments}
           procedures={procedures}
           doctors={doctors}
+          locations={locations}
+          onSubmit={handleModalSubmit}
         />
       </Modal>
     </Container>

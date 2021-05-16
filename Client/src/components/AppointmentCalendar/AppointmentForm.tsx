@@ -1,12 +1,18 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import dayjs from 'dayjs';
 import moment from 'moment';
 import { Select, Form, DatePicker, TimePicker, Input } from 'antd';
 import AppointmentProcedure from '../../interfaces/Appointment/AppointmentProcedure';
 import { Department } from '../../interfaces/Department';
 import Doctor from '../../interfaces/Doctor';
 import { convertMinsToHrsMins } from './AppointmentCalendar';
+import Location from '../../interfaces/Location';
+import Patient from '../../interfaces/Patient';
+import { fetchApi, HTTPMethod } from '../../api/Api';
+import { Room } from '../../interfaces/Room';
 
+const { TextArea } = Input;
 const { Option } = Select;
 
 export interface IAppointmentData {
@@ -21,6 +27,8 @@ type IComponentProps = IAppointmentData & {
   procedures: AppointmentProcedure[];
   doctors: Doctor[];
   departments: Department[];
+  locations: Location[];
+  onSubmit: (values: any) => void;
 };
 
 export const AppointmentForm: React.FC<IComponentProps> = props => {
@@ -28,50 +36,93 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
     doctors, 
     procedures,
     departments,
+    locations,
     doctorId,
     procedureId,
     departmentId,
     from,
     to,
+    onSubmit,
   } = props;
   const [form] = Form.useForm();
 
-  console.log({ 
-    doctorId,
-    procedureId,
-    departmentId,
-   })
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [patientsRecieved, setPatientsRecieved] = useState<boolean>(false);
 
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [roomsRecieved, setRoomsRecieved] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!patientsRecieved) {
+      fetchApi('user/patient/-1', HTTPMethod.GET)
+        .then((result) => { setPatientsRecieved(true); return result; })
+        .then(result => result.json())
+        .then(data => setPatients(data.patients));
+    }
+
+    if (!roomsRecieved) {
+      fetchApi('room/-1', HTTPMethod.GET)
+        .then((result) => { setRoomsRecieved(true); return result; })
+        .then(result => result.json())
+        .then(data => setRooms(data.rooms));
+    }
+  }, [patientsRecieved, roomsRecieved]);
 
   return (
     <Container>
       <Form
+        id="appointmentForm"
         form={form}
         layout="vertical"
-        initialValues={{  }}
-        // onValuesChange={onRequiredTypeChange}
+        initialValues={{
+          patientId: undefined,
+          roomId: undefined,
+          procedureId,
+          doctorId,
+          departmentId,
+          date: moment(from),
+          scheduledTime: moment(from),
+          scheduledEndTime: moment(to),
+          duration: convertMinsToHrsMins(procedures.find(p => p.id == procedureId)?.duration),
+          locationId: locations.find(l => l.id == doctors.find(d => d.id == doctorId)?.locationId)?.id,
+          notes: '',
+        }}
+        onFinish={(values) => {
+          const result: any = {};
+          ['roomId', 'doctorId', 'notes', 'patientId', 'procedureId'].map(k => {
+            result[k] = values[k]
+          });
+
+          result['scheduledTime'] = values['scheduledTime'].format();
+          result['scheduledEndTime'] = values['scheduledEndTime'].format();
+
+          console.log(result);
+        }
+        }
       >
         <StyledSelects>
           <SelectContainer>
-            <Form.Item label="Patient" name="patientId">
+            <Form.Item label="Patient" rules={[{ required: true }]} name="patientId">
               <Select
                 showSearch
                 style={{ width: '100%' }}
                 placeholder="Select patient"
                 optionFilterProp="children"
-                // onChange={onChange}
-                // filterOption={(input, option) =>
-                //   option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                // }
+                filterOption={(input, option: any) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
-                {[]}
+                {patients.map(p => (
+                  <Option key={p.id} value={p.id}>
+                    {`${p.firstName} ${p.lastName} ${dayjs(p.birthDate).format('DD/MM/YYYY')}`}
+                  </Option>
+                ))}
               </Select>
             </Form.Item>
           </SelectContainer>
           <SelectContainer>
             <Form.Item label="Procedure" name="procedureId">
               <Select
-                defaultValue={procedures.find(p => p.id == procedureId)?.id}
                 disabled
                 style={{ width: '100%' }}
                 optionFilterProp="children"
@@ -80,11 +131,10 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
               </Select>
             </Form.Item>
           </SelectContainer>
-          <SelectContainer wrap>
+          <SelectContainer wrap="true">
             <SelectWrapper widthPercent={50}>
               <Form.Item label="Doctor" name="doctorId" style={{ border: '1px solid pink' }}>
                 <Select
-                  defaultValue={doctors.find(d => d.id == doctorId)?.id}
                   disabled
                   style={{ width: '100%' }}
                   optionFilterProp="children"
@@ -96,7 +146,6 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
             <SelectWrapper widthPercent={50}>
               <Form.Item label="Department" name="departmentId" style={{ border: '1px solid pink' }}>
                 <Select
-                  defaultValue={departments.find(d => d.id == departmentId)?.id}
                   disabled
                   style={{ width: '100%' }}
                   optionFilterProp="children"
@@ -106,38 +155,62 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
               </Form.Item>
             </SelectWrapper>
           </SelectContainer>
-          <SelectContainer wrap>
+          <SelectContainer wrap="true">
             <SelectWrapper widthPercent={25}>
-              <Form.Item label="Date">
-                <DatePicker defaultValue={moment(from)} disabled/>
+              <Form.Item label="Date" name="date">
+                <DatePicker disabled/>
               </Form.Item>
             </SelectWrapper>
             <SelectWrapper widthPercent={25}>
               <Form.Item label="From" name="scheduledTime">
-                <TimePicker defaultValue={moment(from)} disabled format={'HH:mm'}/>
+                <TimePicker disabled format={'HH:mm'}/>
               </Form.Item>
             </SelectWrapper>
             <SelectWrapper widthPercent={25}>
               <Form.Item label="From" name="scheduledEndTime">
-                <TimePicker defaultValue={moment(to)} disabled format={'HH:mm'}/>
+                <TimePicker disabled format={'HH:mm'}/>
               </Form.Item>
             </SelectWrapper>
             <SelectWrapper widthPercent={25}>
-              <Form.Item label="Duration">
-                <Input
+              <Form.Item label="Duration" name="duration">
+                <Input disabled placeholder="Basic usage"/>
+              </Form.Item>
+            </SelectWrapper>
+          </SelectContainer>
+          <SelectContainer wrap="true">
+            <SelectWrapper widthPercent={50}>
+              <Form.Item label="Location" name="locationId">
+                <Select
                   disabled
-                  defaultValue={
-                    convertMinsToHrsMins(procedures.find(p => p.id == procedureId)?.duration)
-                  } 
-                  placeholder="Basic usage"
-                />
+                  style={{ width: '100%' }}
+                  optionFilterProp="children"
+                >
+                  {locations.map(l => <Option value={l.id} key={l.id}>{l.locationName}</Option>)}
+                </Select>
+              </Form.Item>
+            </SelectWrapper>
+            <SelectWrapper widthPercent={50}>
+              <Form.Item label="Room" name="roomId" rules={[{ required: true }]}>
+                <Select
+                  showSearch
+                  placeholder="Select room"
+                  style={{ width: '100%' }}
+                  optionFilterProp="children"
+                  filterOption={(input, option: any) =>
+                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {rooms.map(r => <Option value={r.id} key={r.id}>{r.name}</Option>)}
+                </Select>
               </Form.Item>
             </SelectWrapper>
           </SelectContainer>
           <SelectContainer>
-          DISABLED location
+            <Form.Item label="Notes" name="notes">
+              <TextArea rows={4} />
+            </Form.Item>
           </SelectContainer>
-      </StyledSelects>
+        </StyledSelects>
       </Form>
     </Container>
   );
@@ -167,11 +240,11 @@ const StyledSelects = styled.div`
   border: 1px solid red;
 `;
 
-const SelectContainer = styled.div<{ wrap?: boolean }>`
+const SelectContainer = styled.div<{ wrap?: string }>`
   border: 1px solid green;
   margin-bottom: 10px;
 
-  ${({ wrap }) => wrap &&
+  ${({ wrap }) => (wrap == 'true') &&
     `
       display: flex;
       flex-wrap: wrap;
