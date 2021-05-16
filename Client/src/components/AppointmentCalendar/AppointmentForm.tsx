@@ -77,7 +77,7 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
         initialValues={{
           patientId: undefined,
           roomId: undefined,
-          procedureId,
+          appointmentProcedureId: procedureId,
           doctorId,
           departmentId,
           date: moment(from),
@@ -89,7 +89,7 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
         }}
         onFinish={(values) => {
           const result: any = {};
-          ['roomId', 'doctorId', 'notes', 'patientId', 'procedureId'].map(k => {
+          ['roomId', 'doctorId', 'notes', 'patientId', 'appointmentProcedureId'].map(k => {
             result[k] = values[k]
           });
 
@@ -121,7 +121,7 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
             </Form.Item>
           </SelectContainer>
           <SelectContainer>
-            <Form.Item label="Procedure" name="procedureId">
+            <Form.Item label="Procedure" name="appointmentProcedureId">
               <Select
                 disabled
                 style={{ width: '100%' }}
@@ -133,7 +133,7 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
           </SelectContainer>
           <SelectContainer wrap="true">
             <SelectWrapper widthPercent={50}>
-              <Form.Item label="Doctor" name="doctorId" style={{ border: '1px solid pink' }}>
+              <Form.Item label="Doctor" name="doctorId">
                 <Select
                   disabled
                   style={{ width: '100%' }}
@@ -144,7 +144,7 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
               </Form.Item>
             </SelectWrapper>
             <SelectWrapper widthPercent={50}>
-              <Form.Item label="Department" name="departmentId" style={{ border: '1px solid pink' }}>
+              <Form.Item label="Department" name="departmentId">
                 <Select
                   disabled
                   style={{ width: '100%' }}
@@ -236,12 +236,9 @@ const Container = styled.div`
   }
 `;
 
-const StyledSelects = styled.div`
-  border: 1px solid red;
-`;
+const StyledSelects = styled.div``;
 
 const SelectContainer = styled.div<{ wrap?: string }>`
-  border: 1px solid green;
   margin-bottom: 10px;
 
   ${({ wrap }) => (wrap == 'true') &&
@@ -253,7 +250,6 @@ const SelectContainer = styled.div<{ wrap?: string }>`
 `;
 
 const SelectWrapper = styled.div<{ widthPercent: number }>`
-  border: 1px dashed black;
   padding-right: 10px;
   width: ${({ widthPercent }) => widthPercent}%;
 `;

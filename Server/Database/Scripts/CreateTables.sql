@@ -59,14 +59,12 @@ create table if not exists "Appointment" (
     "scheduledTime" varchar not null,
     "scheduledEndTime" varchar not null,
     created varchar not null,
-    status "AppointmentStatus" not null,
-    "paymentStatus" "AppointmentPaymentStatus" null,
     notes text not null,
 
     "patientId" int not null,
     "doctorId" int not null,
-    "procedureId" int not null, /* Ids from doctor's available */
-    "roomId" int not null, /* Sets from app proc */
+    "appointmentProcedureId" int not null,
+    "roomId" int not null,
 
     primary key (id),
 
@@ -78,16 +76,12 @@ create table if not exists "Appointment" (
         foreign key ("doctorId")
         references "Doctor"(id),
 
-    constraint "fk_locationId"
-        foreign key ("locationId")
-        references "Location"(id),
-
     constraint "fk_roomId"
         foreign key ("roomId")
         references "Room"(id),
 
     constraint "fk_appointmentProcedureId"
-        foreign key ("roomId")
+        foreign key ("appointmentProcedureId")
         references "AppointmentProcedure"(id)
 );
 

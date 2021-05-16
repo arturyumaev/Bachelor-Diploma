@@ -205,7 +205,7 @@ const AppointmentCalendar = () => {
         }}
       />
       <Modal
-        title="Basic Modal"
+        title="New appointment"
         width={700}
         visible={openModal}
         // onOk={() => handleModalSubmit()}
