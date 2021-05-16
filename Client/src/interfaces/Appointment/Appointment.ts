@@ -1,28 +1,15 @@
-import AppointmentProcedure from './AppointmentProcedure';
 import WithId from '../WithId';
-import Doctor from '../Doctor';
-import AppointmentStatus from './AppointmentStatus';
-import Location from '../Location';
-import Patient from '../Patient';
 
 interface Appointment extends WithId {
-    name: string;
-    time: number;
-    duration: number;
-    status: AppointmentStatus;
-    notes: string;
+  scheduledTime:string;
+  scheduledEndTime: string;
+  created: string;
+  notes: string;
 
-    patient?: Patient;
-    patientId: number;
-
-    doctor?: Doctor;
-    doctorId: number;
-
-    location?: Location;
-    locationId: number;
-
-    procedures?: Array<AppointmentProcedure>;
+  patientId: number;
+  doctorId: number;
+  appointmentProcedureId: number;
+  roomId: number;
 }
 
 export default Appointment;
-

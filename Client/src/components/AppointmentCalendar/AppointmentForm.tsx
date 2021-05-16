@@ -96,7 +96,7 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
           result['scheduledTime'] = values['scheduledTime'].format();
           result['scheduledEndTime'] = values['scheduledEndTime'].format();
 
-          console.log(result);
+          onSubmit(result);
         }
         }
       >

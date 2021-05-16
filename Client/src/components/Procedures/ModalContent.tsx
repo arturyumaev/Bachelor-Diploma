@@ -51,8 +51,6 @@ export const ModalContent: React.FC<IComponentProps> = (props) => {
 
   const [selectedDepartmentId, setSelectedDepartmentId] = useState<number | undefined>(undefined);
 
-  console.log('selectedDepartmentId', selectedDepartmentId);
-
   useEffect(() => {
     if (locationSelected && !roomsFetched) {
       fetchApi('room/-1', HTTPMethod.GET)
@@ -64,7 +62,6 @@ export const ModalContent: React.FC<IComponentProps> = (props) => {
 
   const handleFinish = () => {
     const dataToSubmit = form.getFieldsValue();
-    console.log(dataToSubmit);
     onSubmit(dataToSubmit).then(() => form.resetFields());
     // ;
   }

@@ -97,9 +97,12 @@ const AppointmentCalendar = () => {
     }
   }, [appointmentData]);
 
+  useEffect(() => {
+    console.log('Updated doctorId', selectedDoctortId);
+  }, [selectedDoctortId]);
+
   const handleModalSubmit = (values: any) => {
-    console.log(values);
-  }
+  };
 
   return (
     <Container>
@@ -159,7 +162,6 @@ const AppointmentCalendar = () => {
             placeholder="Select a procedure"
             optionFilterProp="children"
             onChange={(value: number, option: any) => {
-              console.log('setting up', value);
               setSelectedProcedureId(value);
             }}
             filterOption={(input, option: any) =>
