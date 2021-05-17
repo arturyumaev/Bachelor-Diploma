@@ -15,6 +15,9 @@ module.exports = class GenerateQueriesRoom {
 
   generateDeleteRoom(roomId) {
     let sqlQuery = `
+      DELETE FROM "Appointment"
+      WHERE "roomId" = ${roomId};
+
       DELETE FROM "Room"
       WHERE id = ${roomId};
     `;

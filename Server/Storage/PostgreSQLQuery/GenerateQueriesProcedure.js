@@ -15,6 +15,9 @@ module.exports = class GenerateQueriesProcedure {
 
   generateDeleteProcedure(procedureId) {
     let sqlQuery = `
+      DELETE FROM "Appointment"
+      WHERE "procedureId" = ${procedureId};
+    
       DELETE FROM "AppointmentProcedure"
       WHERE id = ${procedureId};
     `;

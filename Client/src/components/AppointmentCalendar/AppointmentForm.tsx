@@ -11,6 +11,7 @@ import Location from '../../interfaces/Location';
 import Patient from '../../interfaces/Patient';
 import { fetchApi, HTTPMethod } from '../../api/Api';
 import { Room } from '../../interfaces/Room';
+import { CalendarEvent } from './AppointmentCalendar';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -29,6 +30,9 @@ type IComponentProps = IAppointmentData & {
   departments: Department[];
   locations: Location[];
   onSubmit: (values: any) => void;
+
+  readonly: boolean;
+  appointment?: CalendarEvent;
 };
 
 export const AppointmentForm: React.FC<IComponentProps> = props => {
@@ -43,6 +47,8 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
     from,
     to,
     onSubmit,
+    readonly,
+    appointment,
   } = props;
   const [form] = Form.useForm();
 
@@ -51,6 +57,8 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
 
   const [rooms, setRooms] = useState<Room[]>([]);
   const [roomsRecieved, setRoomsRecieved] = useState<boolean>(false);
+
+  console.log(doctors);
 
   useEffect(() => {
     if (!patientsRecieved) {
@@ -75,17 +83,22 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
         form={form}
         layout="vertical"
         initialValues={{
-          patientId: undefined,
-          roomId: undefined,
-          appointmentProcedureId: procedureId,
-          doctorId,
-          departmentId,
-          date: moment(from),
-          scheduledTime: moment(from),
-          scheduledEndTime: moment(to),
-          duration: convertMinsToHrsMins(procedures.find(p => p.id == procedureId)?.duration),
-          locationId: locations.find(l => l.id == doctors.find(d => d.id == doctorId)?.locationId)?.id,
-          notes: '',
+          patientId: readonly ? appointment?.patientId : undefined,
+          roomId: readonly ? appointment?.roomId : undefined,
+          appointmentProcedureId: readonly ? appointment?.procedureId : procedureId,
+          doctorId: readonly ? appointment?.doctorId : doctorId,
+          departmentId: readonly
+            ? doctors.find(doc => doc.id == appointment?.doctorId)?.departmentId
+            : departmentId
+          ,
+          date: readonly ? moment(appointment?.start) : moment(from),
+          scheduledTime: readonly ? moment(appointment?.start) : moment(from),
+          scheduledEndTime: readonly ? moment(appointment?.end) : moment(to),
+          duration: readonly
+            ? convertMinsToHrsMins(procedures.find(p => p.id == appointment?.procedureId)?.duration)
+            : convertMinsToHrsMins(procedures.find(p => p.id == procedureId)?.duration),
+          locationId: readonly ? doctors.find(d => d.id == appointment?.doctorId)?.locationId : doctors.find(d => d.id == doctorId)?.locationId,
+          notes: readonly ? appointment?.notes : '',
         }}
         onFinish={(values) => {
           const result: any = {};
@@ -104,6 +117,7 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
           <SelectContainer>
             <Form.Item label="Patient" rules={[{ required: true }]} name="patientId">
               <Select
+                disabled={readonly}
                 showSearch
                 style={{ width: '100%' }}
                 placeholder="Select patient"
@@ -167,7 +181,7 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
               </Form.Item>
             </SelectWrapper>
             <SelectWrapper widthPercent={25}>
-              <Form.Item label="From" name="scheduledEndTime">
+              <Form.Item label="To" name="scheduledEndTime">
                 <TimePicker disabled format={'HH:mm'}/>
               </Form.Item>
             </SelectWrapper>
@@ -192,6 +206,7 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
             <SelectWrapper widthPercent={50}>
               <Form.Item label="Room" name="roomId" rules={[{ required: true }]}>
                 <Select
+                  disabled={readonly}
                   showSearch
                   placeholder="Select room"
                   style={{ width: '100%' }}
@@ -207,7 +222,7 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
           </SelectContainer>
           <SelectContainer>
             <Form.Item label="Notes" name="notes">
-              <TextArea rows={4} />
+              <TextArea disabled={readonly} rows={4} />
             </Form.Item>
           </SelectContainer>
         </StyledSelects>

@@ -48,6 +48,9 @@ module.exports = class GenerateQueriesPatient {
 
   generateDeletePatient(patientId) {
     let sqlQuery = `
+      DELETE FROM "Appointment"
+      WHERE "patientId" = ${patientId};
+
       DELETE FROM "Patient"
       WHERE id = ${patientId};
     `;
