@@ -92,6 +92,8 @@ const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
   const [appointmentDescrModalOpen, setAppointmentDescrModalOpen] = useState<boolean>(false);
   const [editAppointmentData, setEditAppointmentData] = useState<CalendarEvent>({} as CalendarEvent);
 
+  const [loadAppointments, setLoadAppointments] = useState<boolean>(false);
+
   useEffect(() => {
     if (!doctorsRecieved) {
       fetchApi('user/doctor/-1', HTTPMethod.GET)
@@ -145,6 +147,15 @@ const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
     }
   }, [selectedDoctortId]);
 
+  useEffect(() => {
+    if (selectedDoctortId && loadAppointments) {
+      fetchAppointments(selectedDoctortId)
+        .then(res => res.json())
+        .then(data => setDoctorAppointments(data.appointments))
+        .then(() => setLoadAppointments(false));
+    }
+  }, [loadAppointments]);
+
   const handleModalSubmit = (values: any) => {
     const appointmentData = {
       ...values,
@@ -158,6 +169,18 @@ const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
         .then(data => setDoctorAppointments(data.appointments))
         .then(() => setOpenModal(false));
     }
+  };
+
+  const handleDeleteAppointment = () => {
+    console.log('editAppointmentData', editAppointmentData);
+    fetchApi(`appointment/${editAppointmentData.id}`, HTTPMethod.DELETE)
+      .then(res => res.json())
+      .then(data => console.log(data))
+      .then(() => {
+        setAppointmentDescrModalOpen(false);
+        setEditAppointmentData({} as CalendarEvent);
+        setLoadAppointments(true);
+      })
   };
 
   return (
@@ -254,13 +277,8 @@ const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
       <Calendar
         selectable={!!selectedProcedureId}
         onSelectEvent={(e) => {
-          console.log(e);
           setEditAppointmentData(e);
           setAppointmentDescrModalOpen(true);
-        }}
-        resourceAccessor={(e) => {
-          console.log(e);
-          return 'tooltip';
         }}
         culture="en-GB"
         defaultView={'week'}
@@ -332,7 +350,7 @@ const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
             <Button form="appointmentForm" onClick={() => setAppointmentDescrModalOpen(false)}>
               Cancel
             </Button>,
-            <Button danger>
+            <Button type="primary" danger onClick={handleDeleteAppointment}>
               Delete
             </Button>
           ]
