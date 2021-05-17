@@ -106,12 +106,12 @@ const Procedures: React.FC<StateProps & OwnProps> = (props) => {
   return (
     <Container>
       {props.userProfile.accessControl === 'Admin' &&
-        <ButtonLayout> 
+        <ButtonLayout>
           <Button type="primary" onClick={() => setIsModalVisible(true)}>
             <ReconciliationOutlined />
             New procedure
           </Button>
-          <Title level={3} style={{ marginLeft: '10px' }}>
+          <Title level={3}>
             <Text type="secondary">
               Filters
             </Text>
@@ -119,7 +119,7 @@ const Procedures: React.FC<StateProps & OwnProps> = (props) => {
           <Modal
             title="New procedure"
             visible={isModalVisible}
-            afterClose={() => {}}
+            afterClose={() => { }}
             width={680}
             footer={null}
             confirmLoading={confirmLoading}

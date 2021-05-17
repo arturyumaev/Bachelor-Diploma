@@ -58,8 +58,6 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [roomsRecieved, setRoomsRecieved] = useState<boolean>(false);
 
-  console.log(doctors);
-
   useEffect(() => {
     if (!patientsRecieved) {
       fetchApi('user/patient/-1', HTTPMethod.GET)

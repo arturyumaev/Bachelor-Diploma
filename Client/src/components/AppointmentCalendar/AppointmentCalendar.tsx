@@ -16,6 +16,7 @@ import { connect } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import { IState } from '../../store/reducers/selectedDoctor';
 import updateDoctor from '../../store/actionCreators/userProfile/updateSelectedDoctor';
+import { ICommonUser } from '../../store/reducers/userProfileReducer';
 
 const { Option } = Select;
 const localizer = momentLocalizer(moment);
@@ -58,13 +59,15 @@ export interface CalendarEvent {
 
 type StateProps = {
   selectedDoctor: IState;
+  userProfile: ICommonUser;
   dispatch: AppDispatch;
 }
 
 type OwnProps = {}
 
 const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
-  const { selectedDoctor, dispatch } = props;
+  const { selectedDoctor, userProfile, dispatch } = props;
+  const accessRole = userProfile.accessControl;
 
   const [doctors, setDoctors] = useState<Array<Doctor>>([]);
   const [doctorsRecieved, setDoctorsRecieved] = useState<boolean>(false);
@@ -81,8 +84,16 @@ const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [patientsRecieved, setPatientsRecieved] = useState<boolean>(false);
 
-  const [selectedDepartmentId, setSelectedDepartmentId] = useState<number | undefined>(selectedDoctor.departmentId);
-  const [selectedDoctortId, setSelectedDoctorId] = useState<number | undefined>(selectedDoctor.doctorId);
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState<number | undefined>(
+    accessRole == 'Doctor'
+      ? userProfile.departmentId
+      : selectedDoctor.departmentId
+  );
+  const [selectedDoctortId, setSelectedDoctorId] = useState<number | undefined>(
+    accessRole == 'Doctor'
+      ? userProfile.id
+      : selectedDoctor.doctorId
+  );
   const [selectedProcedureId, setSelectedProcedureId] = useState<number | undefined>(undefined);
 
   const [appointmentData, setAppointmentData] = useState<IAppointmentData>(defaultAppointmentData);
@@ -93,6 +104,8 @@ const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
   const [editAppointmentData, setEditAppointmentData] = useState<CalendarEvent>({} as CalendarEvent);
 
   const [loadAppointments, setLoadAppointments] = useState<boolean>(false);
+
+  console.log(userProfile);
 
   useEffect(() => {
     if (!doctorsRecieved) {
@@ -172,10 +185,8 @@ const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
   };
 
   const handleDeleteAppointment = () => {
-    console.log('editAppointmentData', editAppointmentData);
     fetchApi(`appointment/${editAppointmentData.id}`, HTTPMethod.DELETE)
       .then(res => res.json())
-      .then(data => console.log(data))
       .then(() => {
         setAppointmentDescrModalOpen(false);
         setEditAppointmentData({} as CalendarEvent);
@@ -189,6 +200,7 @@ const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
         <FilterOptionWrapper>
           <Select
             value={selectedDepartmentId}
+            disabled={accessRole == 'Doctor'}
             showSearch
             allowClear
             style={{ width: '100%' }}
@@ -212,6 +224,7 @@ const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
         <FilterOptionWrapper>
           <Select
             value={selectedDoctortId}
+            disabled={accessRole == 'Doctor'}
             showSearch
             allowClear
             style={{ width: '100%' }}
@@ -220,7 +233,6 @@ const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
             onChange={(value: number, option: any) => {
               setSelectedDoctorId(value);
               dispatch(updateDoctor({ doctorId: value, departmentId: doctors.find(d => d.id == value)?.departmentId }));
-
               setSelectedProcedureId(undefined);
               if (value) {
                 setSelectedDepartmentId(doctors.filter(d => d.id == value)[0].departmentId);
@@ -237,45 +249,49 @@ const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
             }
           </Select>
         </FilterOptionWrapper>
-        <FilterOptionWrapper width={350}>
-          <Select
-            disabled={!selectedDoctortId}
-            value={selectedProcedureId}
-            showSearch
-            allowClear
-            style={{ width: '100%' }}
-            placeholder="Select a procedure"
-            optionFilterProp="children"
-            onChange={(value: number, option: any) => {
-              setSelectedProcedureId(value);
-            }}
-            filterOption={(input, option: any) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            {(selectedDoctortId
-                ? procedures.filter(p => p.doctorId == selectedDoctortId)
-                : procedures
-              ).map(p => <Option key={p.id} value={p.id}>{p.name}</Option>)}
-          </Select>
-        </FilterOptionWrapper>
-        <FilterOptionWrapper>
-          <Tag color={!!selectedProcedureId ? '#87d068' : '#f50'}>
-            {!!selectedProcedureId
-              ? <>Duration: {convertMinsToHrsMins(procedures.find(p => p.id == selectedProcedureId)?.duration)}</>
-              : (
-                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                  <InfoCircleOutlined />
-                  &nbsp;
-                  Select procedure
-                </div>
-              )
-            }
-          </Tag>
-        </FilterOptionWrapper>
+        {accessRole == 'Admin' &&
+          <>
+            <FilterOptionWrapper width={350}>
+              <Select
+                disabled={!selectedDoctortId}
+                value={selectedProcedureId}
+                showSearch
+                allowClear
+                style={{ width: '100%' }}
+                placeholder="Select a procedure"
+                optionFilterProp="children"
+                onChange={(value: number, option: any) => {
+                  setSelectedProcedureId(value);
+                }}
+                filterOption={(input, option: any) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+              >
+                {(selectedDoctortId
+                    ? procedures.filter(p => p.doctorId == selectedDoctortId)
+                    : procedures
+                  ).map(p => <Option key={p.id} value={p.id}>{p.name}</Option>)}
+              </Select>
+            </FilterOptionWrapper>
+            <FilterOptionWrapper>
+              <Tag color={!!selectedProcedureId ? '#87d068' : '#f50'}>
+                {!!selectedProcedureId
+                  ? <>Duration: {convertMinsToHrsMins(procedures.find(p => p.id == selectedProcedureId)?.duration)}</>
+                  : (
+                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                      <InfoCircleOutlined />
+                      &nbsp;
+                      Select procedure
+                    </div>
+                  )
+                }
+              </Tag>
+            </FilterOptionWrapper>
+          </>
+        }
       </FiltersContainer>
       <Calendar
-        selectable={!!selectedProcedureId}
+        selectable={!!selectedProcedureId && accessRole == 'Admin'}
         onSelectEvent={(e) => {
           setEditAppointmentData(e);
           setAppointmentDescrModalOpen(true);
@@ -350,7 +366,7 @@ const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
             <Button form="appointmentForm" onClick={() => setAppointmentDescrModalOpen(false)}>
               Cancel
             </Button>,
-            <Button type="primary" danger onClick={handleDeleteAppointment}>
+            <Button disabled={accessRole !== 'Admin'} type="primary" danger onClick={handleDeleteAppointment}>
               Delete
             </Button>
           ]
@@ -379,7 +395,6 @@ const FiltersContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: left;
-  padding: 0px 8px;
 `;
 
 const FilterOptionWrapper = styled.div<{ width?: number }>`
@@ -390,6 +405,7 @@ const FilterOptionWrapper = styled.div<{ width?: number }>`
 const mapStateToProps = (state: RootState) => {
   return {
     selectedDoctor: state.selectedDoctor,
+    userProfile: state.userProfile,
   }
 }
 

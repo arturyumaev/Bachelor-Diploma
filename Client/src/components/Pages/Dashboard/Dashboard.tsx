@@ -71,7 +71,7 @@ const Dashboard = (props: any) => {
  
   return getSession()
     ? (
-      <div>
+      <Container>
         <Layout style={{ minHeight: '100vh' }}>
           <Sider collapsible collapsed={sidebarCollapsed} onCollapse={toggle}>
             <div className="logo" />
@@ -87,7 +87,7 @@ const Dashboard = (props: any) => {
               <Menu.Item key="appointments" icon={<CalendarOutlined />} onClick={() => setActiveTab('appointments')}>
                 Appointments
               </Menu.Item>
-              {accessControl === 'Admin' &&
+              {(accessControl === 'Admin' || accessControl === 'Doctor') &&
                 <Menu.Item key="calendar" icon={<ReconciliationOutlined />} onClick={() => setActiveTab('calendar')}>
                   Calendar
                 </Menu.Item>
@@ -143,12 +143,20 @@ const Dashboard = (props: any) => {
             </Content>
           </Layout>
         </Layout>
-      </div>
+      </Container>
     )
     : (
       <Redirect to='/' />
     );
 };
+
+const Container = styled.div`
+  .ant-breadcrumb-link {
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 1.35;
+  }
+`;
 
 const ContentWrapper = styled.div`
   min-height: 360px;

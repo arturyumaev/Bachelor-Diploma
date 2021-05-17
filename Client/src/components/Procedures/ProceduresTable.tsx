@@ -12,6 +12,9 @@ import Location from '../../interfaces/Location';
 import Doctor from '../../interfaces/Doctor';
 import AppointmentProcedure from '../../interfaces/Appointment/AppointmentProcedure';
 import { Department } from '../../interfaces/Department';
+import { connect } from 'react-redux';
+import { ICommonUser } from '../../store/reducers/userProfileReducer';
+import { AppDispatch } from '../../store/store';
 
 const { Option } = Select;
 const { confirm } = Modal;
@@ -44,13 +47,6 @@ interface IFilterOptions {
   departmentId?: number;
 }
 
-const defaultFilterOptions: IFilterOptions = {
-  doctorId: undefined,
-  locationId: undefined,
-  roomId: undefined,
-  departmentId: undefined,
-}
-
 const filterOnOptions = (
   procedures: AppointmentProcedure[],
   filterOptions: IFilterOptions,
@@ -76,8 +72,21 @@ const filterOnOptions = (
   return filteredProcedures;
 };
 
-const ProceduresTable: React.FC<IComponentProps> = (props) => {
+type StateProps = {
+  userProfile: ICommonUser;
+  dispatch: AppDispatch;
+}
+
+const ProceduresTable: React.FC<StateProps & IComponentProps> = (props) => {
+  const accessRole = props.userProfile.accessControl;
   const { procedures, departments, locations, rooms, doctors, loadProcedures } = props;
+
+  const defaultFilterOptions: IFilterOptions = {
+    doctorId: accessRole == 'Doctor' ? props.userProfile.id : undefined,
+    locationId: accessRole == 'Doctor' ? props.userProfile.locationId : undefined,
+    departmentId: accessRole =='Doctor' ? props.userProfile.departmentId : undefined,
+    roomId: undefined,
+  }
 
   const [dataToRender, setDataToRender] = useState<AppointmentProcedure[]>(procedures);
   const [filterOptions, setFilterOptions] = useState<IFilterOptions>(defaultFilterOptions);
@@ -217,6 +226,8 @@ const ProceduresTable: React.FC<IComponentProps> = (props) => {
       <FiltersContainer>
         <FilterOptionWrapper>
           <Select
+            defaultValue={accessRole == 'Doctor' ? props.userProfile.departmentId : undefined}
+            disabled={accessRole !== 'Admin'}
             showSearch
             allowClear
             style={{ width: '100%' }}
@@ -232,6 +243,8 @@ const ProceduresTable: React.FC<IComponentProps> = (props) => {
         </FilterOptionWrapper>
         <FilterOptionWrapper>
           <Select
+            defaultValue={accessRole == 'Doctor' ? props.userProfile.id : undefined}
+            disabled={accessRole !== 'Admin'}
             showSearch
             allowClear
             style={{ width: '100%' }}
@@ -247,6 +260,8 @@ const ProceduresTable: React.FC<IComponentProps> = (props) => {
         </FilterOptionWrapper>
         <FilterOptionWrapper>
           <Select
+            defaultValue={accessRole == 'Doctor' ? props.userProfile.locationId : undefined}
+            disabled={accessRole !== 'Admin'}
             showSearch
             allowClear
             style={{ width: '100%' }}
@@ -262,7 +277,7 @@ const ProceduresTable: React.FC<IComponentProps> = (props) => {
         </FilterOptionWrapper>
         <FilterOptionWrapper>
           <Select
-            disabled={!filterOptions.locationId}
+            disabled={!filterOptions.locationId || accessRole !== 'Admin'}
             showSearch
             allowClear
             style={{ width: '100%' }}
@@ -307,7 +322,6 @@ const ActionIconLayout = styled.div`
 
 const FiltersContainer = styled(FlexRow)`
   justify-content: space-between;
-  padding: 0px 8px;
 `;
 
 const FilterOptionWrapper = styled.div<{ size?: number }>`
@@ -315,5 +329,12 @@ const FilterOptionWrapper = styled.div<{ size?: number }>`
   margin: 5px 0px 15px 0px;
 `;
 
+const mapStateToProps = (state: any) => {
+  return {
+    userProfile: state.userProfile,
+  }
+};
 
-export default ProceduresTable;
+export default connect(
+  mapStateToProps,
+)(ProceduresTable);

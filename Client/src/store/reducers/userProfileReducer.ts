@@ -16,15 +16,20 @@ export type ICommonUser = {
   hashsum: string;
   accessControl?: AccessControl;
 
-  // For doctor and admin
+  // For both doctor and admin
   locationId?: number;
-  location?: Location;
   appointmentProcedures?: Array<AppointmentProcedure>;
 
   // For patient
   emergencyContactName?: string;
   emergencyContactPhone?: string;
   emergencyContactRelation?: string;
+
+  // For doctor only
+  departmentId?: number;
+  workExperience?: number;
+  academicDegree?: string;
+  notes?: string;
 };
 
 const initialState: ICommonUser = {
@@ -40,15 +45,20 @@ const initialState: ICommonUser = {
   hashsum: '',
   accessControl: undefined,
 
-  // For doctor and admin
+  // For both doctor and admin
   locationId: -1,
-  location: undefined,
   appointmentProcedures: undefined,
 
   // For patient
   emergencyContactName: '',
   emergencyContactPhone: '',
   emergencyContactRelation: '',
+
+  // For doctor only
+  departmentId: -1,
+  workExperience: 0,
+  academicDegree: '',
+  notes: '',
 }
 
 export function userProfile(state: ICommonUser = initialState, action: AnyAction) {
