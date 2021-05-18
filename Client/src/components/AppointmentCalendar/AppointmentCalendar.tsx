@@ -105,8 +105,6 @@ const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
 
   const [loadAppointments, setLoadAppointments] = useState<boolean>(false);
 
-  console.log(userProfile);
-
   useEffect(() => {
     if (!doctorsRecieved) {
       fetchApi('user/doctor/-1', HTTPMethod.GET)

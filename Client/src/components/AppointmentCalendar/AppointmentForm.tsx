@@ -87,8 +87,7 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
           doctorId: readonly ? appointment?.doctorId : doctorId,
           departmentId: readonly
             ? doctors.find(doc => doc.id == appointment?.doctorId)?.departmentId
-            : departmentId
-          ,
+            : departmentId,
           date: readonly ? moment(appointment?.start) : moment(from),
           scheduledTime: readonly ? moment(appointment?.start) : moment(from),
           scheduledEndTime: readonly ? moment(appointment?.end) : moment(to),

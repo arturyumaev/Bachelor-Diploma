@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button } from 'antd';
 import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
@@ -17,6 +17,7 @@ import {
   ApartmentOutlined,
   ReconciliationOutlined,
   ForkOutlined,
+  ScheduleOutlined,
 } from '@ant-design/icons';
 import UserProfile from '../../UserProfile/UserProfile';
 import Analytics from '../../Analytics';
@@ -29,11 +30,12 @@ import Rooms from '../../Rooms/Rooms';
 import Procedures from '../../Procedures/Procedures';
 import Departments from '../../Departments/Departments';
 import AppointmentCalendar from '../../AppointmentCalendar/AppointmentCalendar';
+import Appointments from '../../Appointments/Appointments';
 
 const { Header, Content, Sider } = Layout;
 
 const logoutEntity: string = 'logout';
-const defaultTab = 'calendar';
+const defaultTab = 'appointments';
 
 const Dashboard = (props: any) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
@@ -59,7 +61,7 @@ const Dashboard = (props: any) => {
   const mapTabToComponents: { [key: string]: any } = {
     dashboard: <Analytics />,
     profile: <UserProfile />,
-    appointments: <>appointments</>,
+    appointments: <Appointments />,
     calendar: <AppointmentCalendar />,
     procedures: <Procedures />,
     patients: <Patients />,
@@ -88,7 +90,7 @@ const Dashboard = (props: any) => {
                 Appointments
               </Menu.Item>
               {(accessControl === 'Admin' || accessControl === 'Doctor') &&
-                <Menu.Item key="calendar" icon={<ReconciliationOutlined />} onClick={() => setActiveTab('calendar')}>
+                <Menu.Item key="calendar" icon={<ScheduleOutlined />} onClick={() => setActiveTab('calendar')}>
                   Calendar
                 </Menu.Item>
               }
