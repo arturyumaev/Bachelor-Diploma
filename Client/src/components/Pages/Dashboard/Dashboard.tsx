@@ -59,7 +59,6 @@ const Dashboard = (props: any) => {
   };
 
   const mapTabToComponents: { [key: string]: any } = {
-    dashboard: <Analytics />,
     profile: <UserProfile />,
     appointments: <Appointments />,
     calendar: <AppointmentCalendar />,
@@ -78,11 +77,6 @@ const Dashboard = (props: any) => {
           <Sider collapsible collapsed={sidebarCollapsed} onCollapse={toggle}>
             <div className="logo" />
             <Menu theme="dark" defaultSelectedKeys={[defaultTab]} mode="inline">
-              {accessControl === "Admin" &&
-                <Menu.Item key="dashboard" icon={<PieChartOutlined />} onClick={() => setActiveTab('dashboard')}>
-                  Dashboard
-                </Menu.Item>
-              }
               <Menu.Item key="profile" icon={<ProfileOutlined />} onClick={() => setActiveTab('profile')}>
                 Profile
               </Menu.Item>
@@ -94,9 +88,11 @@ const Dashboard = (props: any) => {
                   Calendar
                 </Menu.Item>
               }
-              <Menu.Item key="procedures" icon={<ReconciliationOutlined />} onClick={() => setActiveTab('procedures')}>
-                Procedures
-              </Menu.Item>
+              {(accessControl === 'Admin' || accessControl === 'Doctor') &&
+                <Menu.Item key="procedures" icon={<ReconciliationOutlined />} onClick={() => setActiveTab('procedures')}>
+                  Procedures
+                </Menu.Item>
+              }
               {(accessControl === 'Admin' || accessControl === 'Doctor') &&
                 <Menu.Item key="patients" icon={<TeamOutlined />} onClick={() => setActiveTab('patients')}>
                   Patients
