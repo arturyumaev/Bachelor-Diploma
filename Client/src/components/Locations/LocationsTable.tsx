@@ -31,9 +31,9 @@ const LocationsTable: React.FC<IComponentProps> = (props) => {
 
   const showConfirm = (text: LocationColumnDescription, record: LocationColumnDescription) => {
     confirm({
-      title: 'Do you want to delete location?',
+      title: 'Вы действительно хотите удалить локацию?',
       icon: <ExclamationCircleOutlined />,
-      content: 'This action cannot be undone',
+      content: 'Это действие нельзя будет отменить',
       onOk() {
         fetchApi(`location/${record.id}`, HTTPMethod.DELETE)
           .then(res => res.json())
@@ -50,18 +50,18 @@ const LocationsTable: React.FC<IComponentProps> = (props) => {
       key: 'id',
     },
     {
-      title: 'Location name',
+      title: 'Название',
       dataIndex: 'locationName',
       key: 'locationName',
       render: (text: any) => <a>{text}</a>,
     },
     {
-      title: 'Address',
+      title: 'Адрес',
       dataIndex: 'address',
       key: 'address',
     },
     {
-      title: 'Phone',
+      title: 'Номер телефона',
       dataIndex: 'phone',
       key: 'phone',
     },
@@ -71,20 +71,13 @@ const LocationsTable: React.FC<IComponentProps> = (props) => {
       key: 'email',
     },
     {
-      title: 'Action',
+      title: 'Действие',
       key: 'action',
       render: (text: any, record: any) => {
         const iconStyles = { fontSize: '22px' };
 
         return (
           <ActionButtonsContainer>
-            <ActionIconLayout
-              onClick={() => {}}
-            >
-              <EyeOutlined
-                style={iconStyles}
-              />
-            </ActionIconLayout>
             <ActionIconLayout onClick={() => showConfirm(text, record)}>
               <CloseSquareTwoTone
                 twoToneColor="#eb2f96"

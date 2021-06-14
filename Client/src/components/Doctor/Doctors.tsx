@@ -81,10 +81,10 @@ const Doctors: React.FC<OwnProps & StateProps> = (props) => {
         <ButtonLayout> 
           <Button type="primary" onClick={() => setIsModalVisible(true)}>
             <UserAddOutlined />
-            New doctor
+            Новый доктор
           </Button>
           <Modal
-            title="New doctor"
+            title="Новый доктор"
             visible={isModalVisible}
             afterClose={() => {}}
             width={680}

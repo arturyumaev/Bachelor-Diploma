@@ -9,7 +9,7 @@ create table if not exists "User" (
     email varchar(50) not null ,
     phone varchar(50) not null ,
     gender "Gender" not null ,
-    "birthDate" timestamp not null ,
+    "birthDate" varchar not null ,
     address varchar(300) not null ,
     username varchar(50) not null ,
     hashsum varchar(50) not null ,

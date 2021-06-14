@@ -14,11 +14,8 @@ const UserProfile = () => {
   return (
     <Container>
       <Tabs defaultActiveKey={defaultActiveTab}>
-        <TabPane tab={<span><FormOutlined />Personal info</span>} key={defaultActiveTab}>
+        <TabPane tab={<span><FormOutlined />Персональная информация</span>} key={defaultActiveTab}>
           <UserProfileForm />
-        </TabPane>
-        <TabPane tab={<span><EllipsisOutlined />Other</span>} key="other">
-          Page in development...
         </TabPane>
       </Tabs>
     </Container>

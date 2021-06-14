@@ -112,12 +112,12 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
       >
         <StyledSelects>
           <SelectContainer>
-            <Form.Item label="Patient" rules={[{ required: true }]} name="patientId">
+            <Form.Item label="Пациент" rules={[{ required: true }]} name="patientId">
               <Select
                 disabled={readonly}
                 showSearch
                 style={{ width: '100%' }}
-                placeholder="Select patient"
+                placeholder="Выберите пациента"
                 optionFilterProp="children"
                 filterOption={(input, option: any) =>
                   option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -132,7 +132,7 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
             </Form.Item>
           </SelectContainer>
           <SelectContainer>
-            <Form.Item label="Procedure" name="appointmentProcedureId">
+            <Form.Item label="Процедура" name="appointmentProcedureId">
               <Select
                 disabled
                 style={{ width: '100%' }}
@@ -155,7 +155,7 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
               </Form.Item>
             </SelectWrapper>
             <SelectWrapper widthPercent={50}>
-              <Form.Item label="Department" name="departmentId">
+              <Form.Item label="Отделение" name="departmentId">
                 <Select
                   disabled
                   style={{ width: '100%' }}
@@ -168,22 +168,22 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
           </SelectContainer>
           <SelectContainer wrap="true">
             <SelectWrapper widthPercent={25}>
-              <Form.Item label="Date" name="date">
+              <Form.Item label="Дата" name="date">
                 <DatePicker disabled/>
               </Form.Item>
             </SelectWrapper>
             <SelectWrapper widthPercent={25}>
-              <Form.Item label="From" name="scheduledTime">
+              <Form.Item label="С" name="scheduledTime">
                 <TimePicker disabled format={'HH:mm'}/>
               </Form.Item>
             </SelectWrapper>
             <SelectWrapper widthPercent={25}>
-              <Form.Item label="To" name="scheduledEndTime">
+              <Form.Item label="До" name="scheduledEndTime">
                 <TimePicker disabled format={'HH:mm'}/>
               </Form.Item>
             </SelectWrapper>
             <SelectWrapper widthPercent={25}>
-              <Form.Item label="Duration" name="duration">
+              <Form.Item label="Продолж." name="duration">
                 <Input disabled placeholder="Basic usage"/>
               </Form.Item>
             </SelectWrapper>
@@ -201,11 +201,11 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
               </Form.Item>
             </SelectWrapper>
             <SelectWrapper widthPercent={50}>
-              <Form.Item label="Room" name="roomId" rules={[{ required: true }]}>
+              <Form.Item label="Кабинет" name="roomId" rules={[{ required: true }]}>
                 <Select
                   disabled={readonly}
                   showSearch
-                  placeholder="Select room"
+                  placeholder="Выберите кабинет"
                   style={{ width: '100%' }}
                   optionFilterProp="children"
                   filterOption={(input, option: any) =>
@@ -218,7 +218,7 @@ export const AppointmentForm: React.FC<IComponentProps> = props => {
             </SelectWrapper>
           </SelectContainer>
           <SelectContainer>
-            <Form.Item label="Notes" name="notes">
+            <Form.Item label="Заметки" name="notes">
               <TextArea disabled={readonly} rows={4} />
             </Form.Item>
           </SelectContainer>

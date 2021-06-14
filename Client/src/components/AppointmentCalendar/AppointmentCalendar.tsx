@@ -3,6 +3,7 @@ import { Calendar, momentLocalizer } from 'react-big-calendar'
 import { Select, Tag, Modal, Button } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import 'moment/locale/ru';
 import styled from 'styled-components';
 import Doctor from '../../interfaces/Doctor';
 import AppointmentProcedure from '../../interfaces/Appointment/AppointmentProcedure';
@@ -140,7 +141,7 @@ const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
         .then(result => result.json())
         .then(data => setPatients(data.patients));
     }
-  }, [doctorsRecieved, proceduresRecieved, departmentsRecieved, locationsRecieved, patientsRecieved]);
+  }, []);
 
   useEffect(() => {
     if (selectedProcedureId) {
@@ -202,7 +203,7 @@ const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
             showSearch
             allowClear
             style={{ width: '100%' }}
-            placeholder="Select a department"
+            placeholder="Выберите отделение"
             optionFilterProp="children"
             onChange={(value: number, option: any) => {
               setSelectedDepartmentId(value);
@@ -226,7 +227,7 @@ const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
             showSearch
             allowClear
             style={{ width: '100%' }}
-            placeholder="Select a doctor"
+            placeholder="Выберите доктора"
             optionFilterProp="children"
             onChange={(value: number, option: any) => {
               setSelectedDoctorId(value);
@@ -256,7 +257,7 @@ const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
                 showSearch
                 allowClear
                 style={{ width: '100%' }}
-                placeholder="Select a procedure"
+                placeholder="Выберите процедуру"
                 optionFilterProp="children"
                 onChange={(value: number, option: any) => {
                   setSelectedProcedureId(value);
@@ -274,12 +275,12 @@ const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
             <FilterOptionWrapper>
               <Tag color={!!selectedProcedureId ? '#87d068' : '#f50'}>
                 {!!selectedProcedureId
-                  ? <>Duration: {convertMinsToHrsMins(procedures.find(p => p.id == selectedProcedureId)?.duration)}</>
+                  ? <>Продолж.: {convertMinsToHrsMins(procedures.find(p => p.id == selectedProcedureId)?.duration)}</>
                   : (
                     <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                       <InfoCircleOutlined />
                       &nbsp;
-                      Select procedure
+                      Выберите процедуру
                     </div>
                   )
                 }
@@ -294,7 +295,16 @@ const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
           setEditAppointmentData(e);
           setAppointmentDescrModalOpen(true);
         }}
-        culture="en-GB"
+        culture="ru-RU"
+        messages={{
+          next: 'След',
+          previous: 'Пред',
+          today: 'Сегодня',
+          month: 'Месяц',
+          week: 'Неделя',
+          day: 'День',
+          agenda: 'Ежедневник'
+        }}
         defaultView={'week'}
         localizer={localizer}
         events={doctorAppointments.map(app => {
@@ -327,7 +337,7 @@ const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
         }}
       />
       <Modal
-        title="New appointment"
+        title="Новая запись"
         width={700}
         visible={openModal}
         onCancel={() => setOpenModal(false)}
@@ -362,10 +372,10 @@ const AppointmentCalendar: React.FC<OwnProps & StateProps> = (props) => {
         footer={
           [
             <Button form="appointmentForm" onClick={() => setAppointmentDescrModalOpen(false)}>
-              Cancel
+              Отмена
             </Button>,
             <Button disabled={accessRole !== 'Admin'} type="primary" danger onClick={handleDeleteAppointment}>
-              Delete
+              Удалить
             </Button>
           ]
         }

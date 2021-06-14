@@ -27,9 +27,9 @@ const DepartmentsTable: React.FC<IComponentProps> = (props) => {
 
   const showConfirm = (text: DepartmentColumnDescription, record: DepartmentColumnDescription) => {
     confirm({
-      title: 'Do you want to delete department?',
+      title: 'Вы действительно хотите удалить отделение?',
       icon: <ExclamationCircleOutlined />,
-      content: 'This action cannot be undone',
+      content: 'Это действие нельзя будет отменить',
       onOk() {
         fetchApi(`department/${record.id}`, HTTPMethod.DELETE)
           .then(res => res.json())
@@ -46,13 +46,13 @@ const DepartmentsTable: React.FC<IComponentProps> = (props) => {
       key: 'id',
     },
     {
-      title: 'Name',
+      title: 'Название',
       dataIndex: 'name',
       key: 'name',
       render: (text: any) => <a>{text}</a>,
     },
     {
-      title: 'Action',
+      title: 'Действие',
       key: 'action',
       render: (text: any, record: any) => {
         const iconStyles = { fontSize: '22px' };

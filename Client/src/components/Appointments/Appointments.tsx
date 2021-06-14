@@ -37,41 +37,38 @@ const Appointments: React.FC<StateProps & OwnProps> = (props) => {
     patients: [],
     appointments: [],
   });
-  const [dataRecieved, setDataRecieved] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!dataRecieved) {
-      Promise.all([
-        fetchApi('appointment/-1', HTTPMethod.GET),
-        fetchApi('user/doctor/-1', HTTPMethod.GET),
-        fetchApi('room/-1', HTTPMethod.GET),
-        fetchApi('procedure/-1', HTTPMethod.GET),
-        fetchApi('user/patient/-1', HTTPMethod.GET),
-      ])
-      .then(values => { setDataRecieved(true); return values; })
-      .then(values => Promise.all(values.map(res => res.json())))
-      .then((data: Array<any>) => {
-        let temp: any = {};
-        data.map((obj: any) => { temp = {...temp, ...obj}; })
-        setState(temp);
-      });
-    }
-  });
-
-  console.log('state', state);
+    setIsLoading(true);
+    Promise.all([
+      fetchApi('appointment/-1', HTTPMethod.GET),
+      fetchApi('user/doctor/-1', HTTPMethod.GET),
+      fetchApi('room/-1', HTTPMethod.GET),
+      fetchApi('procedure/-1', HTTPMethod.GET),
+      fetchApi('user/patient/-1', HTTPMethod.GET),
+    ])
+    .then(values => Promise.all(values.map(res => res.json())))
+    .then((data: Array<any>) => {
+      let temp: any = {};
+      data.map((obj: any) => { temp = {...temp, ...obj}; })
+      setState(temp);
+    })
+    .then(() => setIsLoading(false));
+  }, []);
 
   return (
     <Container>
       <ButtonLayout>
         <Title level={3}>
           <Text type="secondary">
-            Filters
+            Фильтры
           </Text>
         </Title>
       </ButtonLayout>
       <ProceduresLayout>
         <AppointmentsTable
-          dataLoading={!dataRecieved}
+          dataLoading={isLoading}
           appointments={state.appointments}
           doctors={state.doctors}
           patients={state.patients}
@@ -91,7 +88,7 @@ const Container = styled.div`
 
 const ButtonLayout = styled.div`
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: row;
   justify-content: space-between;
   padding-bottom: 16px;
 

@@ -41,9 +41,9 @@ const DoctorsTable: React.FC<IComponentProps> = (props) => {
 
   const showConfirm = (text: DoctorColumnDescription, record: DoctorColumnDescription) => {
     confirm({
-      title: 'Do you want to delete doctor?',
+      title: 'Вы действительно хотите удалить доктора?',
       icon: <ExclamationCircleOutlined />,
-      content: 'This action cannot be undone',
+      content: 'Это действие нельзя будет отменить',
       onOk() {
         fetchApi(`user/doctor/${record.id}`, HTTPMethod.DELETE)
           .then(res => res.json())
@@ -60,13 +60,13 @@ const DoctorsTable: React.FC<IComponentProps> = (props) => {
       key: 'id',
     },
     {
-      title: 'Name',
+      title: 'Имя',
       dataIndex: 'name',
       key: 'name',
       render: (text: any) => <a>{text}</a>,
     },
     {
-      title: 'Phone',
+      title: 'Номер телефона',
       dataIndex: 'phone',
       key: 'phone',
     },
@@ -76,7 +76,7 @@ const DoctorsTable: React.FC<IComponentProps> = (props) => {
       key: 'email',
     },
     {
-      title: 'Department',
+      title: 'Отделение',
       dataIndex: 'departmentId',
       key: 'departmentId',
       render: (text: any, record: any) => {
@@ -88,17 +88,17 @@ const DoctorsTable: React.FC<IComponentProps> = (props) => {
       },
     },
     {
-      title: 'Work experience',
+      title: 'Опыт работы',
       dataIndex: 'workExperience',
       key: 'workExperience',
     },
     {
-      title: 'Academic Degree',
+      title: 'Ученая степень',
       dataIndex: 'academicDegree',
       key: 'academicDegree',
     },
     {
-      title: 'Notes',
+      title: 'Заметки',
       dataIndex: 'notes',
       key: 'notes',
       render: (text: any, record: any) => {
@@ -110,7 +110,7 @@ const DoctorsTable: React.FC<IComponentProps> = (props) => {
       },
     },
     {
-      title: 'Location',
+      title: 'Локация',
       dataIndex: 'locationId',
       key: 'locationId',
       render: (text: any, record: any) => {
@@ -120,7 +120,7 @@ const DoctorsTable: React.FC<IComponentProps> = (props) => {
       },
     },
     {
-      title: 'Action',
+      title: 'Действие',
       key: 'action',
       render: (text: any, record: any) => {
         const iconStyles = { fontSize: '22px' };

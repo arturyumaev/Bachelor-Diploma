@@ -72,10 +72,10 @@ const Rooms: React.FC<StateProps & OwnProps> = (props) => {
         <ButtonLayout> 
           <Button type="primary" onClick={() => setIsModalVisible(true)}>
             <ForkOutlined />
-            New Room
+            Новый кабинет
           </Button>
           <Modal
-            title="New room"
+            title="Новый кабинет"
             visible={isModalVisible}
             afterClose={() => {}}
             width={680}

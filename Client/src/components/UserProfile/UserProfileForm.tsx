@@ -25,33 +25,33 @@ const UserProfileForm = (props: any) => {
 
   const BaseFormFields: Array<IFormField> = [
     {
-      label: 'First name',
+      label: 'Имя',
       name: 'firstName',
-      placeholder: 'Input first name',
+      placeholder: 'Введите имя',
       required: false,
     },
     {
-      label: 'Last name',
+      label: 'Фамилия',
       name: 'lastName',
-      placeholder: 'Input last name',
+      placeholder: 'Введите фамилию',
       required: false,
     },
     {
       label: 'Email',
       name: 'email',
-      placeholder: 'Input email',
+      placeholder: 'Введите email',
       required: false,
     },
     {
-      label: 'Phone number',
+      label: 'Номер телефона',
       name: 'phone',
-      placeholder: 'Input phone number',
+      placeholder: 'Введите номер телефона',
       required: false,
     },
     {
-      label: 'Birth date',
+      label: 'Дата рождения',
       name: 'birthDate',
-      placeholder: 'Input birth date',
+      placeholder: 'Введите дату рождения',
       required: false,
       component: <>
         <DatePicker
@@ -68,9 +68,9 @@ const UserProfileForm = (props: any) => {
       </>
     },
     {
-      label: 'Gender',
+      label: 'Пол',
       name: 'gender',
-      placeholder: 'Select gender',
+      placeholder: 'Выберите пол',
       required: false,
       component: (
         <Select
@@ -79,49 +79,49 @@ const UserProfileForm = (props: any) => {
             form.setFieldsValue({ gender: nextValue });
           }}
         >
-          <Option value="Male">Male</Option>
-          <Option value="Female">Female</Option>
-          <Option value="Other">Other</Option>
+          <Option value="Male">Мужской</Option>
+          <Option value="Female">Женский</Option>
+          <Option value="Other">Другой</Option>
         </Select>
       ),
     },
     {
-      label: 'Username',
+      label: 'Логин',
       name: 'username',
-      placeholder: 'Input username',
+      placeholder: 'Введите логин',
       required: false,
     },
     {
-      label: 'Password',
+      label: 'Пароль',
       name: 'hashsum',
-      placeholder: 'Input password',
+      placeholder: 'Введите пароль',
       required: false,
     },
     {
-      label: 'Address',
+      label: 'Адрес',
       name: 'address',
-      placeholder: 'Input address',
+      placeholder: 'Введите адрес',
       required: false,
     },
   ];
 
   const PatientFields: Array<IFormField> = [
     {
-      label: 'Emergency contact name',
+      label: 'Экстренный случай ФИО',
       name: 'emergencyContactName',
-      placeholder: 'Input name',
+      placeholder: 'Введите ФИО',
       required: false,
     },
     {
-      label: 'Emergency contact phone',
+      label: 'Экстренный случай телефон',
       name: 'emergencyContactPhone',
-      placeholder: 'Input phone',
+      placeholder: 'Введите номер телефона',
       required: false,
     },
     {
-      label: 'Emergency contact relation',
+      label: 'Экстренный случай родственник',
       name: 'emergencyContactRelation',
-      placeholder: 'Input relation',
+      placeholder: 'Введите тип родственника',
       required: false,
     },
   ];
@@ -139,7 +139,7 @@ const UserProfileForm = (props: any) => {
     fetchApi('user', HTTPMethod.PUT, values)
       .then((response) => response.json())
       .then(json => props.dispatch(updateUser(json)));
-      notification.success({ message: 'Data has been updated successfully', duration: 3 });
+      notification.success({ message: 'Данные успешно обновлены', duration: 3 });
   }
 
   return (
@@ -178,7 +178,7 @@ const UserProfileForm = (props: any) => {
         </div>
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            Submit
+            Подтвердить
           </Button>
         </Form.Item>
       </Form>

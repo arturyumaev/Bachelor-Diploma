@@ -45,7 +45,7 @@ const Departments: React.FC<StateProps & OwnProps> = (props) => {
         .then(response => response.json)
         .then(() => setConfirmLoading(false))
         .then(() => setIsModalVisible(false))
-        .then(() => notification.success({ message: 'Department has been successfully created' }))
+        .then(() => notification.success({ message: 'Отделение успешно создано' }))
         .then(() => setDataUpdated(!dataUpdated));
     }, 2000);
   };
@@ -60,10 +60,10 @@ const Departments: React.FC<StateProps & OwnProps> = (props) => {
         <ButtonLayout> 
           <Button type="primary" onClick={() => setIsModalVisible(true)}>
             <ApartmentOutlined />
-            New department
+            Новое отделение
           </Button>
           <Modal
-            title="New department"
+            title="Новое отделение"
             visible={isModalVisible}
             afterClose={() => {}}
             width={680}

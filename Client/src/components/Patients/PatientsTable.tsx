@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Modal } from 'antd';
+import { Table, Modal, DatePicker } from 'antd';
 import {
   CloseSquareTwoTone,
   EyeOutlined,
@@ -9,6 +9,11 @@ import Loader from "react-loader-spinner";
 import { fetchApi, HTTPMethod } from '../../api/Api';
 import styled from 'styled-components';
 import Patient from '../../interfaces/Patient';
+import { AppDispatch, RootState } from '../../store/store';
+import { connect } from 'react-redux';
+import { ICommonUser } from '../../store/reducers/userProfileReducer';
+import moment from 'moment';
+import dayjs from 'dayjs';
 
 const { confirm } = Modal;
 
@@ -26,7 +31,12 @@ interface IComponentProps {
   loadPatients: () => void;
 }
 
-const PatientsTable: React.FC<IComponentProps> = (props) => {
+type StateProps = {
+  userProfile: ICommonUser;
+  dispatch: AppDispatch;
+}
+
+const PatientsTable: React.FC<StateProps & IComponentProps> = (props) => {
   const { patients, patientsLoading, loadPatients } = props;
 
   const showConfirm = (text: PatientColumnDescription, record: PatientColumnDescription) => {
@@ -43,25 +53,26 @@ const PatientsTable: React.FC<IComponentProps> = (props) => {
     });
   };
 
-  const columns = [
+  const columns: any = [
     {
       title: '#id',
       dataIndex: 'id',
       key: 'id',
     },
     {
-      title: 'Name',
+      title: 'Имя',
       dataIndex: 'name',
       key: 'name',
       render: (text: any) => <a>{text}</a>,
     },
     {
-      title: 'Birth date',
+      title: 'Дата рождения',
       dataIndex: 'birthDate',
       key: 'birthDate',
+      render: (text: any) => <>{dayjs(text).format('DD/MM/YYYY')}</>,
     },
     {
-      title: 'Phone',
+      title: 'Номер телефона',
       dataIndex: 'phone',
       key: 'phone',
     },
@@ -70,32 +81,30 @@ const PatientsTable: React.FC<IComponentProps> = (props) => {
       dataIndex: 'email',
       key: 'email',
     },
-    {
-      title: 'Action',
-      key: 'action',
-      render: (text: any, record: any) => {
-        const iconStyles = { fontSize: '22px' };
-
-        return (
-          <ActionButtonsContainer>
-            <ActionIconLayout
-              onClick={() => {}}
-            >
-              <EyeOutlined
-                style={iconStyles}
-              />
-            </ActionIconLayout>
-            <ActionIconLayout onClick={() => showConfirm(text, record)}>
-              <CloseSquareTwoTone
-                twoToneColor="#eb2f96"
-                style={iconStyles}
-              />
-            </ActionIconLayout>
-          </ActionButtonsContainer>
-        );
-      }
-    },
   ];
+
+  if (props.userProfile.accessControl == 'Admin') {
+    columns.push(
+      {
+        title: 'Action',
+        key: 'action',
+        render: (text: any, record: any) => {
+          const iconStyles = { fontSize: '22px' };
+  
+          return (
+            <ActionButtonsContainer>
+              <ActionIconLayout onClick={() => showConfirm(text, record)}>
+                <CloseSquareTwoTone
+                  twoToneColor="#eb2f96"
+                  style={iconStyles}
+                />
+              </ActionIconLayout>
+            </ActionButtonsContainer>
+          );
+        }
+      }
+    );
+  }
   
   const patientsToRender: PatientColumnDescription[] = patients.map(p => ({
     id: p.id,
@@ -152,4 +161,12 @@ const ActionIconLayout = styled.div`
   } 
 `;
 
-export default PatientsTable;
+const mapStateToProps = (state: RootState) => {
+  return {
+    userProfile: state.userProfile,
+  }
+}
+
+export default connect(
+  mapStateToProps,
+)(PatientsTable);

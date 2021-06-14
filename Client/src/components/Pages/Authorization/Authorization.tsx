@@ -9,7 +9,7 @@ const Authorization = () => {
       <div className="center-hor mb-5">
         <h2>
           <i>
-            Medical Clinic Service
+            Медицинский Сервис
           </i>
         </h2>
       </div>

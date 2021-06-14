@@ -55,23 +55,23 @@ const RoomsTable: React.FC<IComponentProps> = (props) => {
       key: 'id',
     },
     {
-      title: 'Name',
+      title: 'Название',
       dataIndex: 'name',
       key: 'name',
       render: (text: any) => <a>{text}</a>,
     },
     {
-      title: 'Floor',
+      title: 'Этаж',
       dataIndex: 'floor',
       key: 'floor',
     },
     {
-      title: 'Notes',
+      title: 'Заметки',
       dataIndex: 'notes',
       key: 'notes',
     },
     {
-      title: 'Location',
+      title: 'Локация',
       dataIndex: 'locationId',
       key: 'locationId',
       render: (text: any, record: any) => {

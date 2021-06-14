@@ -35,7 +35,7 @@ import Appointments from '../../Appointments/Appointments';
 const { Header, Content, Sider } = Layout;
 
 const logoutEntity: string = 'logout';
-const defaultTab = 'appointments';
+const defaultTab = 'calendar';
 
 const Dashboard = (props: any) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
@@ -69,6 +69,18 @@ const Dashboard = (props: any) => {
     rooms: <Rooms />,
     departments: <Departments />
   };
+
+  const mapTabToName = {
+    'Profile': 'Профиль',
+    'Appointments': 'Записи',
+    'Calendar': 'Календарь',
+    'Procedures': 'Процедуры',
+    'Doctors': 'Доктора',
+    'Patients': 'Пациенты',
+    'Rooms': 'Кабинеты',
+    'Departments': 'Отделения',
+    'Locations': 'Локации',
+  };
  
   return getSession()
     ? (
@@ -77,45 +89,45 @@ const Dashboard = (props: any) => {
           <Sider collapsible collapsed={sidebarCollapsed} onCollapse={toggle}>
             <div className="logo" />
             <Menu theme="dark" defaultSelectedKeys={[defaultTab]} mode="inline">
-              <Menu.Item key="profile" icon={<ProfileOutlined />} onClick={() => setActiveTab('profile')}>
-                Profile
+              <Menu.Item title="Профиль" key="profile" icon={<ProfileOutlined />} onClick={() => setActiveTab('profile')}>
+                Профиль
               </Menu.Item>
               <Menu.Item key="appointments" icon={<CalendarOutlined />} onClick={() => setActiveTab('appointments')}>
-                Appointments
+                Записи
               </Menu.Item>
               {(accessControl === 'Admin' || accessControl === 'Doctor') &&
                 <Menu.Item key="calendar" icon={<ScheduleOutlined />} onClick={() => setActiveTab('calendar')}>
-                  Calendar
+                  Календарь
                 </Menu.Item>
               }
               {(accessControl === 'Admin' || accessControl === 'Doctor') &&
                 <Menu.Item key="procedures" icon={<ReconciliationOutlined />} onClick={() => setActiveTab('procedures')}>
-                  Procedures
+                  Процедуры
                 </Menu.Item>
               }
               {(accessControl === 'Admin' || accessControl === 'Doctor') &&
                 <Menu.Item key="patients" icon={<TeamOutlined />} onClick={() => setActiveTab('patients')}>
-                  Patients
+                  Пациенты
                 </Menu.Item>
               }
               {accessControl === 'Admin' &&
                 <Menu.Item key="doctors" icon={<UserAddOutlined />} onClick={() => setActiveTab('doctors')}>
-                  Doctors
+                  Доктора
                 </Menu.Item>
               }
               {accessControl === 'Admin' &&
                 <Menu.Item key="locations" icon={<EnvironmentOutlined />} onClick={() => setActiveTab('locations')}>
-                  Locations
+                  Локации
                 </Menu.Item>
               }
               {(accessControl === 'Admin' || accessControl === 'Doctor') &&
                 <Menu.Item key="rooms" icon={<ForkOutlined />} onClick={() => setActiveTab('rooms')}>
-                  Rooms
+                  Кабинеты
                 </Menu.Item>
               }
               {(accessControl === 'Admin' || accessControl === 'Doctor') &&
                 <Menu.Item key="departments" icon={<ApartmentOutlined />} onClick={() => setActiveTab('departments')}>
-                  Departments
+                  Отделения
                 </Menu.Item>
               }
             </Menu>
@@ -124,16 +136,17 @@ const Dashboard = (props: any) => {
             <Header className="site-layout-background" style={{ padding: 12 }}>
               <LogoutButtonWrapper>
                 <Greeting>
-                  Hello, {props.userProfile.firstName}
+                  Здравствуйте, {props.userProfile.firstName}
                 </Greeting>
                 <Button type="primary" onClick={() => handleLogout(globalContext)} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                  <ImportOutlined />Logout
+                  <ImportOutlined />Выйти
                 </Button>
               </LogoutButtonWrapper>
             </Header>
             <Content style={{ margin: '0 16px' }}>
               <Breadcrumb style={{ margin: '16px 0' }}>
-                <Breadcrumb.Item>{activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}</Breadcrumb.Item>
+                {/* @ts-ignore */}
+                <Breadcrumb.Item>{mapTabToName[(activeTab.charAt(0).toUpperCase() + activeTab.slice(1))]}</Breadcrumb.Item>
               </Breadcrumb>
               <ContentWrapper className="site-layout-background">
                 {mapTabToComponents[activeTab]}

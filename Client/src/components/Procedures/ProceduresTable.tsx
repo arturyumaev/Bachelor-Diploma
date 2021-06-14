@@ -97,9 +97,9 @@ const ProceduresTable: React.FC<StateProps & IComponentProps> = (props) => {
 
   const showConfirm = (text: ProcedureColumnDescription, record: ProcedureColumnDescription) => {
     confirm({
-      title: 'Do you want to delete procedure?',
+      title: 'Вы хотите удалить процедуру?',
       icon: <ExclamationCircleOutlined />,
-      content: 'This action cannot be undone',
+      content: 'Это действие нельзя будет отменить',
       onOk() {
         fetchApi(`procedure/${record.id}`, HTTPMethod.DELETE)
           .then(res => res.json())
@@ -109,20 +109,20 @@ const ProceduresTable: React.FC<StateProps & IComponentProps> = (props) => {
     });
   };
 
-  const columns = [
+  const columns: any = [
     {
       title: '#id',
       dataIndex: 'id',
       key: 'id',
     },
     {
-      title: 'Name',
+      title: 'Название',
       dataIndex: 'name',
       key: 'name',
       render: (text: any) => <a>{text}</a>,
     },
     {
-      title: 'Departments',
+      title: 'Отделение',
       dataIndex: 'departmentId',
       key: 'departmentId',
       render: (text: number, record: any) => {
@@ -135,7 +135,7 @@ const ProceduresTable: React.FC<StateProps & IComponentProps> = (props) => {
       }
     },
     {
-      title: 'Doctor',
+      title: 'Доктор',
       dataIndex: 'doctorId',
       key: 'doctorId',
       render: (text: number, record: any) => {
@@ -148,7 +148,7 @@ const ProceduresTable: React.FC<StateProps & IComponentProps> = (props) => {
       }
     },
     {
-      title: 'Location',
+      title: 'Локация',
       dataIndex: 'locationId',
       key: 'locationId',
       render: (text: number, record: any) => {
@@ -161,7 +161,7 @@ const ProceduresTable: React.FC<StateProps & IComponentProps> = (props) => {
       }
     },
     {
-      title: 'Room',
+      title: 'Кабинет',
       dataIndex: 'roomId',
       key: 'roomId',
       render: (text: number, record: any) => {
@@ -174,39 +174,44 @@ const ProceduresTable: React.FC<StateProps & IComponentProps> = (props) => {
       }
     },
     {
-      title: 'Duration (min)',
+      title: 'Продолж. (мин)',
       dataIndex: 'duration',
       key: 'duration',
     },
     {
-      title: 'Price',
+      title: 'Цена',
       dataIndex: 'price',
       key: 'price',
     },
     {
-      title: 'Notes',
+      title: 'Заметки',
       dataIndex: 'notes',
       key: 'notes',
     },
-    {
-      title: 'Action',
-      key: 'action',
-      render: (text: any, record: any) => {
-        const iconStyles = { fontSize: '22px' };
-
-        return (
-          <ActionButtonsContainer>
-            <ActionIconLayout onClick={() => showConfirm(text, record)}>
-              <CloseSquareTwoTone
-                twoToneColor="#eb2f96"
-                style={iconStyles}
-              />
-            </ActionIconLayout>
-          </ActionButtonsContainer>
-        );
-      }
-    },
   ];
+
+  if (props.userProfile.accessControl == 'Admin') {
+    columns.push(
+      {
+        title: 'Действие',
+        key: 'action',
+        render: (text: any, record: any) => {
+          const iconStyles = { fontSize: '22px' };
+  
+          return (
+            <ActionButtonsContainer>
+              <ActionIconLayout onClick={() => showConfirm(text, record)}>
+                <CloseSquareTwoTone
+                  twoToneColor="#eb2f96"
+                  style={iconStyles}
+                />
+              </ActionIconLayout>
+            </ActionButtonsContainer>
+          );
+        }
+      }
+    )
+  }
 
   const proceduresToRender: ProcedureColumnDescription[] = filterOnOptions(dataToRender, filterOptions)
     .map(p => ({
@@ -231,7 +236,7 @@ const ProceduresTable: React.FC<StateProps & IComponentProps> = (props) => {
             showSearch
             allowClear
             style={{ width: '100%' }}
-            placeholder="Select a department"
+            placeholder="Выберите отделение"
             optionFilterProp="children"
             onChange={(value: number, option: any) => setFilterOptions({ ...filterOptions, departmentId: value })}
             filterOption={(input, option: any) =>
@@ -248,7 +253,7 @@ const ProceduresTable: React.FC<StateProps & IComponentProps> = (props) => {
             showSearch
             allowClear
             style={{ width: '100%' }}
-            placeholder="Select a doctor"
+            placeholder="Выберите доктора"
             optionFilterProp="children"
             onChange={(value: number, option: any) => setFilterOptions({ ...filterOptions, doctorId: value })}
             filterOption={(input, option: any) =>
@@ -265,7 +270,7 @@ const ProceduresTable: React.FC<StateProps & IComponentProps> = (props) => {
             showSearch
             allowClear
             style={{ width: '100%' }}
-            placeholder="Select a location"
+            placeholder="Выберите локацию"
             optionFilterProp="children"
             onChange={(value: number, option: any) => setFilterOptions({ ...filterOptions, locationId: value })}
             filterOption={(input, option: any) =>
@@ -281,7 +286,7 @@ const ProceduresTable: React.FC<StateProps & IComponentProps> = (props) => {
             showSearch
             allowClear
             style={{ width: '100%' }}
-            placeholder="Select a room"
+            placeholder="Выберите кабинет"
             optionFilterProp="children"
             onChange={(value: number, option: any) => setFilterOptions({ ...filterOptions, roomId: value })}
             filterOption={(input, option: any) =>

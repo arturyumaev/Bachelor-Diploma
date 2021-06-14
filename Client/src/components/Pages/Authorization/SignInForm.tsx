@@ -34,7 +34,7 @@ const SignInForm = (props: any) => {
   return (
     <div>
       <div className="center-hor">
-        <h5>Authorization</h5>
+        <h5>Авторизация</h5>
       </div>
 
       <Form
@@ -44,20 +44,20 @@ const SignInForm = (props: any) => {
         onFinish={onSubmit}
       >
         <Form.Item name="username" rules={[{ required: true, message: 'Please input username!' }]}>
-          <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
+          <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Логин" />
         </Form.Item>
 
         <Form.Item name="password" rules={[{ required: true, message: 'Please input password!' }]}>
           <Input
             prefix={<LockOutlined className="site-form-item-icon" />}
             type="password"
-            placeholder="Password"
+            placeholder="Пароль"
           />
         </Form.Item>
 
         <Form.Item>
           <div className="pull right">
-            <Button type="primary" htmlType="submit" className="login-form-button">Log in</Button>
+            <Button type="primary" htmlType="submit" className="login-form-button">Войти</Button>
           </div>
         </Form.Item>
       </Form>

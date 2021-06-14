@@ -114,9 +114,9 @@ const AppointmentsTable: React.FC<IComponentProps & StateProps> = React.memo((pr
 
   const showConfirm = (text: AppointmentColumnDescription, record: AppointmentColumnDescription) => {
     confirm({
-      title: 'Do you want to delete appointment?',
+      title: 'Вы хотите удалить запись?',
       icon: <ExclamationCircleOutlined />,
-      content: 'This action cannot be undone',
+      content: 'Это действие нельзя будет отменить',
       onOk() {
         // fetchApi(`appointment/${record.id}`, HTTPMethod.DELETE)
         //   .then(res => res.json())
@@ -133,7 +133,7 @@ const AppointmentsTable: React.FC<IComponentProps & StateProps> = React.memo((pr
       key: 'id',
     },
     {
-      title: 'Doctor',
+      title: 'Доктор',
       dataIndex: 'doctorId',
       key: 'doctorId',
       render: (text: string, record: AppointmentColumnDescription) => {
@@ -142,7 +142,7 @@ const AppointmentsTable: React.FC<IComponentProps & StateProps> = React.memo((pr
       },
     },
     {
-      title: 'Patient',
+      title: 'Пациент',
       dataIndex: 'patientId',
       key: 'patientId',
       render: (text: string, record: AppointmentColumnDescription) => {
@@ -151,7 +151,7 @@ const AppointmentsTable: React.FC<IComponentProps & StateProps> = React.memo((pr
       },
     },
     {
-      title: 'Procedure',
+      title: 'Процедура',
       dataIndex: 'appointmentProcedureId',
       key: 'appointmentProcedureId',
       render: (text: string, record: AppointmentColumnDescription) => {
@@ -160,7 +160,7 @@ const AppointmentsTable: React.FC<IComponentProps & StateProps> = React.memo((pr
       },
     },
     {
-      title: 'Room',
+      title: 'Кабинет',
       dataIndex: 'roomId',
       key: 'roomId',
       render: (text: string, record: AppointmentColumnDescription) => {
@@ -169,7 +169,7 @@ const AppointmentsTable: React.FC<IComponentProps & StateProps> = React.memo((pr
       },
     },
     {
-      title: 'Date',
+      title: 'Дата',
       dataIndex: 'date',
       key: 'date',
       render: (text: string, record: AppointmentColumnDescription) => {
@@ -177,7 +177,7 @@ const AppointmentsTable: React.FC<IComponentProps & StateProps> = React.memo((pr
       }
     },
     {
-      title: 'Time',
+      title: 'Время',
       dataIndex: 'scheduledTime',
       key: 'scheduledTime',
       render: (text: string, record: AppointmentColumnDescription) => {
@@ -185,10 +185,10 @@ const AppointmentsTable: React.FC<IComponentProps & StateProps> = React.memo((pr
           <TimeTable>
             <LeftColumn>
               <TimeTableTitle>
-                From
+                С
               </TimeTableTitle>
               <TimeTableTitle>
-                To
+                До
               </TimeTableTitle>
             </LeftColumn>
             <RightColumn>
@@ -202,7 +202,7 @@ const AppointmentsTable: React.FC<IComponentProps & StateProps> = React.memo((pr
       }
     },
     {
-      title: 'Notes',
+      title: 'Заметки',
       dataIndex: 'notes',
       key: 'notes',
     },
@@ -211,7 +211,7 @@ const AppointmentsTable: React.FC<IComponentProps & StateProps> = React.memo((pr
   if (props.userProfile.accessControl == 'Admin') {
     columns.push(
       {
-        title: 'Action',
+        title: 'Действие',
         key: 'action',
         render: (text: any, record: any) => {
           const iconStyles = { fontSize: '22px' };
@@ -269,7 +269,7 @@ const AppointmentsTable: React.FC<IComponentProps & StateProps> = React.memo((pr
             showSearch
             allowClear
             style={{ width: '100%' }}
-            placeholder="Select a doctor"
+            placeholder="Выберите доктора"
             optionFilterProp="children"
             onChange={(value: number, option: any) => setFilterOptions({ ...filterOptions, doctorId: value })}
             filterOption={(input, option: any) =>
@@ -286,7 +286,7 @@ const AppointmentsTable: React.FC<IComponentProps & StateProps> = React.memo((pr
             showSearch
             allowClear
             style={{ width: '100%' }}
-            placeholder="Select a patient"
+            placeholder="Выберите пациента"
             optionFilterProp="children"
             onChange={(value: number, option: any) => setFilterOptions({ ...filterOptions, patientId: value })}
             filterOption={(input, option: any) =>
@@ -301,7 +301,7 @@ const AppointmentsTable: React.FC<IComponentProps & StateProps> = React.memo((pr
             showSearch
             allowClear
             style={{ width: '100%' }}
-            placeholder="Select a procedure"
+            placeholder="Выберите процедуру"
             optionFilterProp="children"
             onChange={(value: number, option: any) => setFilterOptions({ ...filterOptions, procedureId: value })}
             filterOption={(input, option: any) =>

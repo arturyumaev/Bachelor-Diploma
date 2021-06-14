@@ -92,7 +92,7 @@ const Procedures: React.FC<StateProps & OwnProps> = (props) => {
           .then(() => setConfirmLoading(false))
           .then(() => setIsModalVisible(false))
           .then(() => setProceduresRecieved(false))
-          .then(() => notification.success({ message: 'Procedure has been successfully created' }))
+          .then(() => notification.success({ message: 'Процедура была успешно создана' }))
           .then(() => setDataUpdated(!dataUpdated))
           .then(() => resolve(null));
       }, 2000);
@@ -109,15 +109,15 @@ const Procedures: React.FC<StateProps & OwnProps> = (props) => {
         <ButtonLayout>
           <Button type="primary" onClick={() => setIsModalVisible(true)}>
             <ReconciliationOutlined />
-            New procedure
+            Новая процедура
           </Button>
           <Title level={3}>
             <Text type="secondary">
-              Filters
+              Фильтры
             </Text>
           </Title>
           <Modal
-            title="New procedure"
+            title="Новая процедура"
             visible={isModalVisible}
             afterClose={() => { }}
             width={680}
